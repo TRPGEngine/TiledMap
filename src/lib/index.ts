@@ -1,6 +1,7 @@
 import Konva from 'konva';
+import { TiledMapManager } from './manager';
 import { buildTiledMapStage } from './stage';
-import { buildGridSnapBound } from './utils/buildGridSnapBound';
+import { BaseToken } from './token/BaseToken';
 
 const defaultOptions = {
   gridNum: 20, // 网格数
@@ -11,11 +12,9 @@ const defaultOptions = {
  * 初始化地图
  */
 export function initTiledMap(el: HTMLDivElement, options = defaultOptions) {
-  const { gridNum, gridSize } = options;
-  const stage = buildTiledMapStage(el, gridNum, gridSize);
+  const tiledMapManager = new TiledMapManager(el, options);
 
-  const layer = new Konva.Layer();
-  const circle = new Konva.Rect({
+  const rect = new Konva.Rect({
     x: 0,
     y: 0,
     width: 100,
@@ -23,17 +22,10 @@ export function initTiledMap(el: HTMLDivElement, options = defaultOptions) {
     fill: 'red',
     stroke: 'black',
     strokeWidth: 4,
-    draggable: true,
-    dragBoundFunc: buildGridSnapBound(gridSize),
   });
 
-  circle.on('dragend', (e) => {
-    const currentPos = e.currentTarget.position();
-    console.log(currentPos);
-  });
+  const token = new BaseToken(tiledMapManager, rect);
 
-  layer.add(circle);
-  stage.add(layer);
-
-  layer.draw();
+  tiledMapManager.addToken(token);
+  tiledMapManager.draw();
 }
