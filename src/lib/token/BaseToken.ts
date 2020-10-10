@@ -2,6 +2,8 @@ import type Konva from 'konva';
 import type { TiledMapManager } from '../manager';
 import shortid from 'shortid';
 import { buildGridSnapBound } from '../utils/buildGridSnapBound';
+import { TRANSFORMABLE } from './names';
+import { fixNumber } from '../utils/fixNumber';
 
 interface TokenOptions {
   id: string;
@@ -30,6 +32,8 @@ export class BaseToken {
       this.node.dragBoundFunc(buildGridSnapBound(manager.options.gridSize));
     }
 
+    this.node.addName(TRANSFORMABLE);
+
     manager.notify('add', this.getAttrs());
     this.initEvent();
   }
@@ -51,16 +55,31 @@ export class BaseToken {
       }
       this.manager.notify('update', this.getAttrs());
     });
+
+    this.node.on('transformend', (e) => {
+      this.manager.notify('update', this.getAttrs());
+    });
   }
 
+  /**
+   * 获取Token传输的信息
+   */
   getAttrs() {
-    const pos = this.node.position();
     const id = this.id;
+    const pos = this.node.position();
+    const size = this.node.size();
+    const scale = this.node.scale();
+    const rotation = this.node.rotation();
 
     return {
       id,
-      x: pos.x,
-      y: pos.y,
+      x: fixNumber(pos.x),
+      y: fixNumber(pos.y),
+      width: fixNumber(size.width),
+      height: fixNumber(size.height),
+      scaleX: fixNumber(scale.x),
+      scaleY: fixNumber(scale.y),
+      rotation,
     };
   }
 }

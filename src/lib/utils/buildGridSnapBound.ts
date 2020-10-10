@@ -1,4 +1,5 @@
 import type Konva from 'konva';
+import { snapGrid } from './snapGrid';
 
 /**
  * 构建一个只在网格内移动, 并且坐标贴合网格的移动拖拽操作
@@ -14,8 +15,8 @@ export function buildGridSnapBound(gridSize: number) {
     const deltaX = absolutePosition.x - relativePos.x;
     const deltaY = absolutePosition.y - relativePos.y;
 
-    const targetX = Math.round((pos.x - deltaX) / gridSize) * gridSize + deltaX;
-    const targetY = Math.round((pos.y - deltaY) / gridSize) * gridSize + deltaY;
+    const targetX = snapGrid(pos.x - deltaX, gridSize) + deltaX;
+    const targetY = snapGrid(pos.y - deltaY, gridSize) + deltaY;
 
     return {
       x: targetX,
@@ -24,4 +25,19 @@ export function buildGridSnapBound(gridSize: number) {
   }
 
   return dragBoundFunc;
+}
+
+/**
+ * 用于Transformer的bound
+ */
+export function buildGridSnapBoundBox(gridSize: number) {
+  function boundBoxFunc(oldBox: any, newBox: any): any {
+    const targetBox = { ...newBox };
+    targetBox.width = snapGrid(newBox.width, gridSize);
+    targetBox.height = snapGrid(newBox.height, gridSize);
+
+    return targetBox;
+  }
+
+  return boundBoxFunc;
 }

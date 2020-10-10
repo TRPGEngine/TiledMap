@@ -15,13 +15,11 @@ export function initTiledMap(el: HTMLDivElement, options = defaultOptions) {
   const tiledMapManager = new TiledMapManager(el, options);
 
   const rect = new Konva.Rect({
-    x: 0,
-    y: 0,
-    width: 100,
-    height: 100,
+    x: 80,
+    y: 80,
+    width: 120,
+    height: 120,
     fill: 'red',
-    stroke: 'black',
-    strokeWidth: 4,
   });
 
   const token = new BaseToken(tiledMapManager, rect);
