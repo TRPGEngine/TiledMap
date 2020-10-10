@@ -11,5 +11,23 @@
     <div id="root"></div>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <script type="module" src="/_dist_/index.js"></script>
+    <script>
+      // 性能检测
+      (function () {
+        var script = document.createElement('script');
+        script.onload = function () {
+          var stats = new Stats();
+          document.body.appendChild(stats.dom);
+          stats.dom.style.left = 'auto';
+          stats.dom.style.right = 0;
+          requestAnimationFrame(function loop() {
+            stats.update();
+            requestAnimationFrame(loop);
+          });
+        };
+        script.src = '//mrdoob.github.io/stats.js/build/stats.min.js';
+        document.head.appendChild(script);
+      })();
+    </script>
   </body>
 </html>
