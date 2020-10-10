@@ -5,9 +5,11 @@ import { buildGridSnapBound } from '../utils/buildGridSnapBound';
 import { TRANSFORMABLE } from './names';
 import { fixNumber } from '../utils/fixNumber';
 
-interface TokenOptions {
+export interface TokenOptions {
   id: string;
   snapGrid: boolean; //是否贴合到网格
+  width?: number;
+  height?: number;
 }
 
 export class BaseToken {
@@ -18,7 +20,9 @@ export class BaseToken {
     public node: Konva.Shape,
     options?: TokenOptions,
   ) {
-    const { id, snapGrid = true } = options ?? {};
+    const gridSize = manager.options.gridSize;
+    const { id, snapGrid = true, width = gridSize, height = gridSize } =
+      options ?? {};
 
     if (typeof id !== 'string') {
       this.id = shortid();
@@ -26,10 +30,13 @@ export class BaseToken {
       this.id = id;
     }
 
+    this.node.width(width);
+    this.node.height(height);
+
     this.node.draggable(true);
     if (snapGrid === true) {
       // 贴合到网格
-      this.node.dragBoundFunc(buildGridSnapBound(manager.options.gridSize));
+      this.node.dragBoundFunc(buildGridSnapBound(gridSize));
     }
 
     this.node.addName(TRANSFORMABLE);
@@ -82,4 +89,21 @@ export class BaseToken {
       rotation,
     };
   }
+
+  /**
+   * 向上移动一级
+   */
+  moveUp = this.node.moveUp;
+  /**
+   * 移动到顶层
+   */
+  moveToTop = this.node.moveToTop;
+  /**
+   * 向下移动一级
+   */
+  moveDown = this.node.moveDown;
+  /**
+   * 移动到底部
+   */
+  moveToBottom = this.node.moveToBottom;
 }

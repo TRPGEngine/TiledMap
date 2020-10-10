@@ -31,7 +31,7 @@ export function buildGridSnapBound(gridSize: number) {
  * 用于Transformer的bound
  */
 export function buildGridSnapBoundBox(gridSize: number) {
-  function boundBoxFunc(oldBox: any, newBox: any): any {
+  function boundBoxFunc(oldBox: Konva.Box, newBox: Konva.Box): Konva.Box {
     const targetBox = { ...newBox };
     targetBox.width = snapGrid(newBox.width, gridSize);
     targetBox.height = snapGrid(newBox.height, gridSize);
