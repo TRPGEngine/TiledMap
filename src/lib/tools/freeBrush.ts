@@ -2,7 +2,7 @@ import Konva from 'konva';
 import type { KonvaEventObject } from 'konva/types/Node';
 import { BaseTool } from './baseTool';
 
-export class FreePainter extends BaseTool {
+export class FreeBrush extends BaseTool {
   active() {
     const stage = this.manager.stage;
 

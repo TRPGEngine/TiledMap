@@ -2,7 +2,7 @@ import Konva from 'konva';
 import { TiledMapManager } from './manager';
 import { BaseToken } from './token/BaseToken';
 import { ImageToken } from './token/ImageToken';
-import { FreePainter } from './tools/freePainter';
+import { FreeBrush } from './tools/freeBrush';
 
 const defaultOptions = {
   gridNum: 20, // 网格数
@@ -32,8 +32,8 @@ export function initTiledMap(el: HTMLDivElement, options = defaultOptions) {
     40,
   );
 
-  const brickPainter = new FreePainter(tiledMapManager);
-  brickPainter.active();
+  const freeBrush = new FreeBrush(tiledMapManager);
+  freeBrush.active();
 
   tiledMapManager.addToken(token);
   tiledMapManager.addToken(imageToken);
