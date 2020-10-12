@@ -5,7 +5,7 @@ import _throttle from 'lodash/throttle';
 import _isNil from 'lodash/isNil';
 import type { Stage } from 'konva/types/Stage';
 import type { Vector2d } from 'konva/types/types';
-import { BaseToken } from '../token/BaseToken';
+import { FreeToken } from '../token/FreeToken';
 
 export class FreeBrush extends BaseTool {
   active() {
@@ -68,9 +68,8 @@ export class FreeBrush extends BaseTool {
     if (_isNil(this.lastLine)) {
       return;
     }
-    const token = new BaseToken(this.manager, this.lastLine);
+    const token = new FreeToken(this.manager, this.lastLine);
     this.manager.addToken(token);
-    this.lastLine.remove();
   };
 
   private _mousemove = _throttle(() => {

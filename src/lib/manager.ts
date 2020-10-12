@@ -2,7 +2,7 @@ import type { BaseNotifyAttrs } from './token/types';
 import Konva from 'konva';
 import type { BaseToken } from './token/BaseToken';
 import { buildTiledMapStage } from './stage';
-import { TRANSFORMABLE } from './token/names';
+import { SNAPGRIDTOKEN, TRANSFORMABLE } from './token/names';
 import { buildGridSnapBoundBox } from './utils/buildGridSnapBound';
 import type { BaseTool } from './tools/baseTool';
 import { FreeBrush } from './tools/freeBrush';
@@ -30,7 +30,8 @@ export class TiledMapManager {
   constructor(el: HTMLDivElement, public options: TiledMapManagerOptions) {
     const { gridNum, gridSize } = options;
     const stage = buildTiledMapStage(el, gridNum, gridSize);
-    stage.add(this.defaultLayer);
+    this.stage = stage;
+    this.addLayer(this.defaultLayer);
 
     // 选择相关
     this.tr = new Konva.Transformer({
@@ -41,7 +42,6 @@ export class TiledMapManager {
     });
     this.defaultLayer.add(this.tr);
 
-    this.stage = stage;
     this.initStageEvent();
     this.initTools();
   }
@@ -50,6 +50,7 @@ export class TiledMapManager {
     const stage = this.stage;
     const tr = this.tr;
     const layer = this.defaultLayer;
+    const gridSize = this.options.gridSize;
 
     // clicks should select/deselect shapes
     stage.on('click tap', function (e) {
@@ -62,6 +63,12 @@ export class TiledMapManager {
 
       if (!e.target.hasName(TRANSFORMABLE)) {
         return;
+      }
+
+      if (e.target.hasName(SNAPGRIDTOKEN)) {
+        tr.boundBoxFunc(buildGridSnapBoundBox(gridSize));
+      } else {
+        tr.boundBoxFunc((_, newBox) => newBox);
       }
 
       // do we pressed shift or ctrl?
@@ -155,6 +162,14 @@ export class TiledMapManager {
     this.defaultLayer.add(node);
 
     node.on;
+  }
+
+  /**
+   * 增加层
+   * @param layer Konva层
+   */
+  addLayer(layer: Konva.Layer) {
+    this.stage.add(layer);
   }
 
   notify(type: NotifyType, attrs: BaseNotifyAttrs) {

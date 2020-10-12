@@ -2,12 +2,11 @@ import type Konva from 'konva';
 import type { TiledMapManager } from '../manager';
 import shortid from 'shortid';
 import { buildGridSnapBound } from '../utils/buildGridSnapBound';
-import { TRANSFORMABLE } from './names';
+import { SNAPGRIDTOKEN, TRANSFORMABLE } from './names';
 import { fixNumber } from '../utils/fixNumber';
 
 export interface TokenOptions {
   id: string;
-  snapGrid: boolean; //是否贴合到网格
   width?: number;
   height?: number;
 }
@@ -21,8 +20,7 @@ export class BaseToken {
     options?: TokenOptions,
   ) {
     const gridSize = manager.options.gridSize;
-    const { id, snapGrid = true, width = gridSize, height = gridSize } =
-      options ?? {};
+    const { id, width = gridSize, height = gridSize } = options ?? {};
 
     if (typeof id !== 'string') {
       this.id = shortid();
@@ -34,15 +32,21 @@ export class BaseToken {
     this.node.height(height);
 
     this.node.draggable(true);
-    if (snapGrid === true) {
+    if (this.snapGrid === true) {
       // 贴合到网格
       this.node.dragBoundFunc(buildGridSnapBound(gridSize));
+      this.node.addName(SNAPGRIDTOKEN); // 贴合网格的Token
     }
 
+    // 可变换
     this.node.addName(TRANSFORMABLE);
 
     manager.notify('add', this.getAttrs());
     this.initEvent();
+  }
+
+  get snapGrid() {
+    return true;
   }
 
   initEvent() {
