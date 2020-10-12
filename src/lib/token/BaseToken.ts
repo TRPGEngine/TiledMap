@@ -87,6 +87,7 @@ export class BaseToken {
       scaleX: fixNumber(scale.x),
       scaleY: fixNumber(scale.y),
       rotation,
+      node: this.node.getAttrs(),
     };
   }
 

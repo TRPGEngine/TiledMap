@@ -12,7 +12,10 @@ const defaultOptions = {
 /**
  * 初始化地图
  */
-export function initTiledMap(el: HTMLDivElement, options = defaultOptions) {
+export function initTiledMap(
+  el: HTMLDivElement,
+  options = defaultOptions,
+): TiledMapManager {
   const tiledMapManager = new TiledMapManager(el, options);
 
   const rect = new Konva.Rect({
@@ -32,10 +35,9 @@ export function initTiledMap(el: HTMLDivElement, options = defaultOptions) {
     40,
   );
 
-  const freeBrush = new FreeBrush(tiledMapManager);
-  freeBrush.active();
-
   tiledMapManager.addToken(token);
   tiledMapManager.addToken(imageToken);
   tiledMapManager.draw();
+
+  return tiledMapManager;
 }

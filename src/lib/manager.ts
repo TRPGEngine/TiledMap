@@ -4,6 +4,9 @@ import type { BaseToken } from './token/BaseToken';
 import { buildTiledMapStage } from './stage';
 import { TRANSFORMABLE } from './token/names';
 import { buildGridSnapBoundBox } from './utils/buildGridSnapBound';
+import type { BaseTool } from './tools/baseTool';
+import { FreeBrush } from './tools/freeBrush';
+import _isNil from 'lodash/isNil';
 
 type NotifyType = 'add' | 'update' | 'remove';
 
@@ -19,6 +22,10 @@ export class TiledMapManager {
   });
   tr: Konva.Transformer;
   currentLayer = this.defaultLayer;
+  currentToolName = '';
+  tools: {
+    [name: string]: BaseTool;
+  } = {};
 
   constructor(el: HTMLDivElement, public options: TiledMapManagerOptions) {
     const { gridNum, gridSize } = options;
@@ -36,6 +43,7 @@ export class TiledMapManager {
 
     this.stage = stage;
     this.initStageEvent();
+    this.initTools();
   }
 
   initStageEvent() {
@@ -108,6 +116,38 @@ export class TiledMapManager {
     //   stage.position(newPos);
     //   stage.batchDraw();
     // });
+  }
+
+  initTools() {
+    this.tools['freeBrush'] = new FreeBrush(this);
+  }
+
+  /**
+   * 切换工具
+   * @param toolName 工具名
+   */
+  switchTool(toolName: string): boolean {
+    // 取消上一个工具
+    const prevTool = this.tools[this.currentToolName];
+    if (!_isNil(prevTool)) {
+      prevTool.deactive();
+    }
+
+    if (toolName === this.currentToolName) {
+      // 取消选择
+      this.currentToolName = '';
+      return true;
+    }
+
+    // 切换到当前工具
+    const tool = this.tools[toolName];
+    if (!_isNil(tool)) {
+      this.currentToolName = toolName;
+      tool.active();
+      return true;
+    } else {
+      return false;
+    }
   }
 
   addToken(token: BaseToken) {

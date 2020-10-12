@@ -1,6 +1,11 @@
 import Konva from 'konva';
 import type { KonvaEventObject } from 'konva/types/Node';
 import { BaseTool } from './baseTool';
+import _throttle from 'lodash/throttle';
+import _isNil from 'lodash/isNil';
+import type { Stage } from 'konva/types/Stage';
+import type { Vector2d } from 'konva/types/types';
+import { BaseToken } from '../token/BaseToken';
 
 export class FreeBrush extends BaseTool {
   active() {
@@ -21,14 +26,29 @@ export class FreeBrush extends BaseTool {
     stage.off('mousemove touchmove', this._mousemove);
   }
 
+  /**
+   * 根据stage的信息计算正确的位置
+   */
+  private getPosFromStage(stage: Stage): Vector2d | null {
+    const pointerPos = stage.getPointerPosition();
+    const stagePos = stage.position();
+    if (_isNil(pointerPos) || _isNil(stagePos)) {
+      return null;
+    }
+
+    return {
+      x: pointerPos.x - stagePos.x,
+      y: pointerPos.y - stagePos.y,
+    };
+  }
+
   isPaint = false;
   lastLine: Konva.Line | null = null;
-  _mousedown = (e: KonvaEventObject<any>) => {
+  private _mousedown = (e: KonvaEventObject<any>) => {
     const stage = this.manager.stage;
-    const gridSize = this.manager.options.gridSize;
 
     this.isPaint = true;
-    const pos = stage.getPointerPosition();
+    const pos = this.getPosFromStage(stage);
     if (pos === null) {
       return;
     }
@@ -38,14 +58,22 @@ export class FreeBrush extends BaseTool {
       globalCompositeOperation: 'source-over',
       points: [pos.x, pos.y],
     });
+
     this.manager.currentLayer.add(this.lastLine);
   };
 
-  _mouseup = () => {
+  private _mouseup = () => {
     this.isPaint = false;
+
+    if (_isNil(this.lastLine)) {
+      return;
+    }
+    const token = new BaseToken(this.manager, this.lastLine);
+    this.manager.addToken(token);
+    this.lastLine.remove();
   };
 
-  _mousemove = () => {
+  private _mousemove = _throttle(() => {
     const stage = this.manager.stage;
     const lastLine = this.lastLine;
 
@@ -57,13 +85,14 @@ export class FreeBrush extends BaseTool {
       return;
     }
 
-    const pos = stage.getPointerPosition();
-    if (pos === null) {
+    const pos = this.getPosFromStage(stage);
+    if (_isNil(pos)) {
       return;
     }
-    var newPoints = lastLine.points().concat([pos.x, pos.y]);
+
+    const newPoints = lastLine.points().concat([pos.x, pos.y]);
     lastLine.points(newPoints);
     // this.manager.currentLayer.batchDraw();
     lastLine.draw();
-  };
+  }, 50);
 }
