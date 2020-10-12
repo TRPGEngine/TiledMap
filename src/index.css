@@ -6,13 +6,13 @@ body {
 
 @font-face {
   font-family: 'iconfont'; /* project id 395009 */
-  src: url('//at.alicdn.com/t/font_395009_cy854padv6d.eot');
-  src: url('//at.alicdn.com/t/font_395009_cy854padv6d.eot?#iefix')
+  src: url('//at.alicdn.com/t/font_395009_07fkl6fm2yyv.eot');
+  src: url('//at.alicdn.com/t/font_395009_07fkl6fm2yyv.eot?#iefix')
       format('embedded-opentype'),
-    url('//at.alicdn.com/t/font_395009_cy854padv6d.woff2') format('woff2'),
-    url('//at.alicdn.com/t/font_395009_cy854padv6d.woff') format('woff'),
-    url('//at.alicdn.com/t/font_395009_cy854padv6d.ttf') format('truetype'),
-    url('//at.alicdn.com/t/font_395009_cy854padv6d.svg#iconfont') format('svg');
+    url('//at.alicdn.com/t/font_395009_07fkl6fm2yyv.woff2') format('woff2'),
+    url('//at.alicdn.com/t/font_395009_07fkl6fm2yyv.woff') format('woff'),
+    url('//at.alicdn.com/t/font_395009_07fkl6fm2yyv.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_395009_07fkl6fm2yyv.svg#iconfont') format('svg');
 }
 
 .iconfont {

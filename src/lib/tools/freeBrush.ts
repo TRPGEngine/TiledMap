@@ -3,11 +3,11 @@ import type { KonvaEventObject } from 'konva/types/Node';
 import { BaseTool } from './baseTool';
 import _throttle from 'lodash/throttle';
 import _isNil from 'lodash/isNil';
-import type { Stage } from 'konva/types/Stage';
-import type { Vector2d } from 'konva/types/types';
 import { FreeToken } from '../token/FreeToken';
 
 export class FreeBrush extends BaseTool {
+  static toolName = 'freeBrush';
+
   active() {
     const stage = this.manager.stage;
 
@@ -26,29 +26,13 @@ export class FreeBrush extends BaseTool {
     stage.off('mousemove touchmove', this._mousemove);
   }
 
-  /**
-   * 根据stage的信息计算正确的位置
-   */
-  private getPosFromStage(stage: Stage): Vector2d | null {
-    const pointerPos = stage.getPointerPosition();
-    const stagePos = stage.position();
-    if (_isNil(pointerPos) || _isNil(stagePos)) {
-      return null;
-    }
-
-    return {
-      x: pointerPos.x - stagePos.x,
-      y: pointerPos.y - stagePos.y,
-    };
-  }
-
   isPaint = false;
   lastLine: Konva.Line | null = null;
   private _mousedown = (e: KonvaEventObject<any>) => {
     const stage = this.manager.stage;
 
     this.isPaint = true;
-    const pos = this.getPosFromStage(stage);
+    const pos = this.getPointerPosFromStage();
     if (pos === null) {
       return;
     }
@@ -73,7 +57,6 @@ export class FreeBrush extends BaseTool {
   };
 
   private _mousemove = _throttle(() => {
-    const stage = this.manager.stage;
     const lastLine = this.lastLine;
 
     if (!this.isPaint) {
@@ -84,7 +67,7 @@ export class FreeBrush extends BaseTool {
       return;
     }
 
-    const pos = this.getPosFromStage(stage);
+    const pos = this.getPointerPosFromStage();
     if (_isNil(pos)) {
       return;
     }

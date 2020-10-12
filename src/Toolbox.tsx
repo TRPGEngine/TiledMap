@@ -43,6 +43,14 @@ export const Toolbox: React.FC<Props> = React.memo((props) => {
     [currentTool],
   );
 
+  useEffect(() => {
+    if (!tiledMapManagerRef.current) {
+      return;
+    }
+
+    setCurrentTool(tiledMapManagerRef.current.currentToolName);
+  }, [tiledMapManagerRef.current]);
+
   return (
     <Root>
       <Item
@@ -50,6 +58,12 @@ export const Toolbox: React.FC<Props> = React.memo((props) => {
         onClick={() => handleSwitchTool('freeBrush')}
       >
         &#xe8b4;
+      </Item>
+      <Item
+        active={currentTool === 'tiledBrush'}
+        onClick={() => handleSwitchTool('tiledBrush')}
+      >
+        &#xe650;
       </Item>
     </Root>
   );

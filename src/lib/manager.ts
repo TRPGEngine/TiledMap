@@ -7,6 +7,7 @@ import { buildGridSnapBoundBox } from './utils/buildGridSnapBound';
 import type { BaseTool } from './tools/baseTool';
 import { FreeBrush } from './tools/freeBrush';
 import _isNil from 'lodash/isNil';
+import { TiledBrush } from './tools/tiledBrush';
 
 type NotifyType = 'add' | 'update' | 'remove';
 
@@ -65,6 +66,7 @@ export class TiledMapManager {
         return;
       }
 
+      // 缩放策略
       if (e.target.hasName(SNAPGRIDTOKEN)) {
         tr.boundBoxFunc(buildGridSnapBoundBox(gridSize));
       } else {
@@ -126,7 +128,8 @@ export class TiledMapManager {
   }
 
   initTools() {
-    this.tools['freeBrush'] = new FreeBrush(this);
+    this.tools[FreeBrush.toolName] = new FreeBrush(this);
+    this.tools[TiledBrush.toolName] = new TiledBrush(this);
   }
 
   /**
