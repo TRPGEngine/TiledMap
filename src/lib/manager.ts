@@ -14,8 +14,11 @@ interface TiledMapManagerOptions {
 
 export class TiledMapManager {
   stage: Konva.Stage;
-  defaultLayer = new Konva.Layer();
+  defaultLayer = new Konva.Layer({
+    name: 'defaultLayer',
+  });
   tr: Konva.Transformer;
+  currentLayer = this.defaultLayer;
 
   constructor(el: HTMLDivElement, public options: TiledMapManagerOptions) {
     const { gridNum, gridSize } = options;
@@ -75,6 +78,36 @@ export class TiledMapManager {
       }
       layer.draw();
     });
+
+    // // 场景缩放
+    // // 有点问题, 目前的拖动贴合算法会鬼畜。
+    // const scaleBy = 1.1;
+    // stage.on('wheel', (e) => {
+    //   e.evt.preventDefault();
+    //   const oldScale = stage.scaleX();
+
+    //   const pointer = stage.getPointerPosition();
+
+    //   if (pointer === null) {
+    //     return;
+    //   }
+
+    //   const mousePointTo = {
+    //     x: (pointer.x - stage.x()) / oldScale,
+    //     y: (pointer.y - stage.y()) / oldScale,
+    //   };
+
+    //   const newScale = e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+
+    //   stage.scale({ x: newScale, y: newScale });
+
+    //   const newPos = {
+    //     x: pointer.x - mousePointTo.x * newScale,
+    //     y: pointer.y - mousePointTo.y * newScale,
+    //   };
+    //   stage.position(newPos);
+    //   stage.batchDraw();
+    // });
   }
 
   addToken(token: BaseToken) {
