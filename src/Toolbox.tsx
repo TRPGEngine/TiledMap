@@ -48,7 +48,7 @@ export const Toolbox: React.FC<Props> = React.memo((props) => {
       return;
     }
 
-    setCurrentTool(tiledMapManagerRef.current.currentToolName);
+    setCurrentTool(tiledMapManagerRef.current.getCurrentToolName());
   }, [tiledMapManagerRef.current]);
 
   return (

@@ -43,7 +43,7 @@ export class FreeBrush extends BaseTool {
       points: [pos.x, pos.y],
     });
 
-    this.manager.currentLayer.add(this.lastLine);
+    this.manager.getCurrentLayer().add(this.lastLine);
   };
 
   private _mouseup = () => {

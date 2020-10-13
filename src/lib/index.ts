@@ -2,7 +2,6 @@ import Konva from 'konva';
 import { TiledMapManager } from './manager';
 import { BaseToken } from './token/BaseToken';
 import { ImageToken } from './token/ImageToken';
-import { FreeBrush } from './tools/freeBrush';
 
 const defaultOptions = {
   gridNum: 20, // 网格数

@@ -42,7 +42,7 @@ export class TiledBrush extends BaseTool {
       return;
     }
 
-    const currentLayer = this.manager.currentLayer;
+    const currentLayer = this.manager.getCurrentLayer();
     const pos = this.getPointerPosFromStage();
     if (_isNil(pos)) {
       return;
@@ -63,8 +63,8 @@ export class TiledBrush extends BaseTool {
       fill: 'red',
     });
     rect.addName(BRICK);
-    this.manager.currentLayer.add(rect); // TODO: 应该是token
+    currentLayer.add(rect); // TODO: 应该是token
     this.drawedNode.add(rect);
     rect.draw();
-  }, 100);
+  }, 50);
 }

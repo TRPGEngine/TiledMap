@@ -4,10 +4,9 @@ import type { BaseToken } from './token/BaseToken';
 import { buildTiledMapStage } from './stage';
 import { SNAPGRIDTOKEN, TRANSFORMABLE } from './token/names';
 import { buildGridSnapBoundBox } from './utils/buildGridSnapBound';
-import type { BaseTool } from './tools/baseTool';
-import { FreeBrush } from './tools/freeBrush';
 import _isNil from 'lodash/isNil';
-import { TiledBrush } from './tools/tiledBrush';
+import { ToolManager } from './tools/manager';
+import { LayerManager } from './layer';
 
 type NotifyType = 'add' | 'update' | 'remove';
 
@@ -18,21 +17,17 @@ interface TiledMapManagerOptions {
 
 export class TiledMapManager {
   stage: Konva.Stage;
-  defaultLayer = new Konva.Layer({
-    name: 'defaultLayer',
-  });
   tr: Konva.Transformer;
-  currentLayer = this.defaultLayer;
-  currentToolName = '';
-  tools: {
-    [name: string]: BaseTool;
-  } = {};
+
+  toolManager = new ToolManager(this);
+  layerManager: LayerManager;
 
   constructor(el: HTMLDivElement, public options: TiledMapManagerOptions) {
     const { gridNum, gridSize } = options;
     const stage = buildTiledMapStage(el, gridNum, gridSize);
     this.stage = stage;
-    this.addLayer(this.defaultLayer);
+
+    this.layerManager = new LayerManager(this);
 
     // 选择相关
     this.tr = new Konva.Transformer({
@@ -41,16 +36,14 @@ export class TiledMapManager {
       rotationSnaps: [0, 45, 90, 135, 180, 225, 270, 315],
       boundBoxFunc: buildGridSnapBoundBox(gridSize),
     });
-    this.defaultLayer.add(this.tr);
+    this.layerManager.defaultLayer.add(this.tr);
 
     this.initStageEvent();
-    this.initTools();
   }
 
   initStageEvent() {
     const stage = this.stage;
     const tr = this.tr;
-    const layer = this.defaultLayer;
     const gridSize = this.options.gridSize;
 
     // clicks should select/deselect shapes
@@ -58,7 +51,7 @@ export class TiledMapManager {
       // if click on empty area - remove all selections
       if (e.target === stage) {
         tr.nodes([]);
-        layer.draw();
+        tr.getLayer()?.draw();
         return;
       }
 
@@ -93,7 +86,7 @@ export class TiledMapManager {
         const nodes = tr.nodes().concat([e.target]);
         tr.nodes(nodes);
       }
-      layer.draw();
+      tr.getLayer()?.draw();
     });
 
     // // 场景缩放
@@ -127,52 +120,25 @@ export class TiledMapManager {
     // });
   }
 
-  initTools() {
-    this.tools[FreeBrush.toolName] = new FreeBrush(this);
-    this.tools[TiledBrush.toolName] = new TiledBrush(this);
-  }
-
-  /**
-   * 切换工具
-   * @param toolName 工具名
-   */
-  switchTool(toolName: string): boolean {
-    // 取消上一个工具
-    const prevTool = this.tools[this.currentToolName];
-    if (!_isNil(prevTool)) {
-      prevTool.deactive();
-    }
-
-    if (toolName === this.currentToolName) {
-      // 取消选择
-      this.currentToolName = '';
-      return true;
-    }
-
-    // 切换到当前工具
-    const tool = this.tools[toolName];
-    if (!_isNil(tool)) {
-      this.currentToolName = toolName;
-      tool.active();
-      return true;
-    } else {
-      return false;
-    }
-  }
+  switchTool = this.toolManager.switchTool.bind(this.toolManager);
 
   addToken(token: BaseToken) {
     const node = token.node;
-    this.defaultLayer.add(node);
-
-    node.on;
+    this.getCurrentLayer().add(node);
   }
 
   /**
-   * 增加层
-   * @param layer Konva层
+   * 获取当前激活的层
    */
-  addLayer(layer: Konva.Layer) {
-    this.stage.add(layer);
+  getCurrentLayer(): Konva.Layer {
+    return this.layerManager.currentLayer;
+  }
+
+  /**
+   * 获取当前使用的工具名
+   */
+  getCurrentToolName(): string {
+    return this.toolManager.currentToolName;
   }
 
   notify(type: NotifyType, attrs: BaseNotifyAttrs) {
@@ -180,6 +146,6 @@ export class TiledMapManager {
   }
 
   draw() {
-    this.defaultLayer.draw();
+    this.stage.draw();
   }
 }
