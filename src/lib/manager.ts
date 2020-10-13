@@ -7,6 +7,7 @@ import { buildGridSnapBoundBox } from './utils/buildGridSnapBound';
 import _isNil from 'lodash/isNil';
 import { ToolManager } from './tools/manager';
 import { LayerManager } from './layer';
+import type { BaseLayer } from './layer/BaseLayer';
 
 type NotifyType = 'add' | 'update' | 'remove';
 
@@ -36,7 +37,7 @@ export class TiledMapManager {
       rotationSnaps: [0, 45, 90, 135, 180, 225, 270, 315],
       boundBoxFunc: buildGridSnapBoundBox(gridSize),
     });
-    this.layerManager.defaultLayer.add(this.tr);
+    this.layerManager.defaultLayer.getRenderLayer().add(this.tr);
 
     this.initStageEvent();
   }
@@ -124,14 +125,21 @@ export class TiledMapManager {
   setToolConfig = this.toolManager.setToolConfig.bind(this.toolManager);
 
   addToken(token: BaseToken) {
-    const node = token.node;
-    this.getCurrentLayer().add(node);
+    this.getCurrentLayer().addToken(token);
+  }
+
+  /**
+   * 增加层
+   * @param layer 层
+   */
+  addLayer(layer: BaseLayer) {
+    this.stage.add(layer.getRenderLayer());
   }
 
   /**
    * 获取当前激活的层
    */
-  getCurrentLayer(): Konva.Layer {
+  getCurrentLayer(): BaseLayer {
     return this.layerManager.currentLayer;
   }
 

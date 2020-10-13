@@ -66,7 +66,7 @@ export class TiledBrush extends BaseTool {
       return;
     }
 
-    const node = currentLayer.getIntersection(pos);
+    const node = currentLayer.getRenderLayer().getIntersection(pos);
     if (!_isNil(node) && node.hasName(BRICK)) {
       // 销毁之前的
       this.drawedNode.delete(node);
@@ -93,7 +93,7 @@ export class TiledBrush extends BaseTool {
     imageObj.src =
       'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // 一像素白色图片
     image.addName(BRICK);
-    this.mapManager.getCurrentLayer().add(image);
+    this.mapManager.getCurrentLayer().getRenderLayer().add(image);
     this.drawedNode.add(image);
     this.lastDrawPos = drawPos;
     image.draw();

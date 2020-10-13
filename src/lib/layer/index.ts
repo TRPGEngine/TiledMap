@@ -1,21 +1,14 @@
 import Konva from 'konva';
 import type { TiledMapManager } from '../manager';
+import { BaseLayer } from './BaseLayer';
 
 export class LayerManager {
-  defaultLayer = new Konva.Layer({
+  defaultLayer = new BaseLayer({
     name: 'defaultLayer',
   });
   currentLayer = this.defaultLayer;
 
   constructor(public tiledMapManager: TiledMapManager) {
-    tiledMapManager.stage.add(this.defaultLayer);
-  }
-
-  /**
-   * 增加层
-   * @param layer Konva层
-   */
-  addLayer(layer: Konva.Layer) {
-    this.tiledMapManager.stage.add(layer);
+    tiledMapManager.addLayer(this.defaultLayer);
   }
 }
