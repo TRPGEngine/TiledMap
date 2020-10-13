@@ -1,4 +1,4 @@
-import { BaseTool } from './baseTool';
+import { BaseTool } from './BaseTool';
 import _throttle from 'lodash/throttle';
 import _isNil from 'lodash/isNil';
 import { BRICK } from '../token/names';
@@ -9,7 +9,7 @@ export class TiledBrush extends BaseTool {
   static toolName = 'tiledBrush';
 
   active() {
-    const stage = this.manager.stage;
+    const stage = this.mapManager.stage;
 
     stage.draggable(false);
     stage.on('mousedown touchstart', this._mousedown);
@@ -18,7 +18,7 @@ export class TiledBrush extends BaseTool {
   }
 
   deactive() {
-    const stage = this.manager.stage;
+    const stage = this.mapManager.stage;
 
     stage.draggable(true);
     stage.off('mousedown touchstart', this._mousedown);
@@ -42,7 +42,7 @@ export class TiledBrush extends BaseTool {
       return;
     }
 
-    const currentLayer = this.manager.getCurrentLayer();
+    const currentLayer = this.mapManager.getCurrentLayer();
     const pos = this.getPointerPosFromStage();
     if (_isNil(pos)) {
       return;
@@ -54,7 +54,7 @@ export class TiledBrush extends BaseTool {
       node.destroy();
     }
 
-    const gridSize = this.manager.options.gridSize;
+    const gridSize = this.mapManager.options.gridSize;
     const rect = new Konva.Rect({
       x: clipToGrid(pos.x, gridSize),
       y: clipToGrid(pos.y, gridSize),

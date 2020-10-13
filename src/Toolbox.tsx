@@ -53,18 +53,22 @@ export const Toolbox: React.FC<Props> = React.memo((props) => {
 
   return (
     <Root>
-      <Item
-        active={currentTool === 'freeBrush'}
-        onClick={() => handleSwitchTool('freeBrush')}
-      >
-        &#xe8b4;
-      </Item>
-      <Item
-        active={currentTool === 'tiledBrush'}
-        onClick={() => handleSwitchTool('tiledBrush')}
-      >
-        &#xe650;
-      </Item>
+      <div>
+        <Item
+          active={currentTool === 'freeBrush'}
+          onClick={() => handleSwitchTool('freeBrush')}
+        >
+          &#xe8b4;
+        </Item>
+        <Item
+          active={currentTool === 'tiledBrush'}
+          onClick={() => handleSwitchTool('tiledBrush')}
+        >
+          &#xe650;
+        </Item>
+      </div>
+
+      <div></div>
     </Root>
   );
 });

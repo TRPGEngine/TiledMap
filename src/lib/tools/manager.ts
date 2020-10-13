@@ -1,12 +1,18 @@
 import type { TiledMapManager } from '../manager';
-import type { BaseTool } from './baseTool';
-import { FreeBrush } from './freeBrush';
-import { TiledBrush } from './tiledBrush';
+import type { BaseTool } from './BaseTool';
+import { FreeBrush } from './FreeBrush';
+import { TiledBrush } from './TiledBrush';
 import _isNil from 'lodash/isNil';
+
+export interface ToolConfig {
+  [key: string]: string | number;
+}
 
 export class ToolManager {
   currentToolName = '';
-  tools: {
+  currentToolConfig: ToolConfig = {};
+
+  private tools: {
     [name: string]: BaseTool;
   } = {};
 
@@ -15,8 +21,8 @@ export class ToolManager {
   }
 
   initTools() {
-    this.tools[FreeBrush.toolName] = new FreeBrush(this.tiledMapManager);
-    this.tools[TiledBrush.toolName] = new TiledBrush(this.tiledMapManager);
+    this.tools[FreeBrush.toolName] = new FreeBrush(this);
+    this.tools[TiledBrush.toolName] = new TiledBrush(this);
   }
 
   /**
@@ -40,10 +46,19 @@ export class ToolManager {
     const tool = this.tools[toolName];
     if (!_isNil(tool)) {
       this.currentToolName = toolName;
+      this.currentToolConfig = {}; // 配置项置空
       tool.active();
       return true;
     } else {
       return false;
     }
+  }
+
+  /**
+   * 设置当前工具的配置项
+   * @param config 配置项
+   */
+  setToolConfig(config: ToolConfig): void {
+    this.currentToolConfig = config;
   }
 }

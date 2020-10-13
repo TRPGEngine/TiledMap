@@ -1,6 +1,6 @@
 import Konva from 'konva';
 import type { KonvaEventObject } from 'konva/types/Node';
-import { BaseTool } from './baseTool';
+import { BaseTool } from './BaseTool';
 import _throttle from 'lodash/throttle';
 import _isNil from 'lodash/isNil';
 import { FreeToken } from '../token/FreeToken';
@@ -9,7 +9,7 @@ export class FreeBrush extends BaseTool {
   static toolName = 'freeBrush';
 
   active() {
-    const stage = this.manager.stage;
+    const stage = this.mapManager.stage;
 
     stage.draggable(false);
     stage.on('mousedown touchstart', this._mousedown);
@@ -18,7 +18,7 @@ export class FreeBrush extends BaseTool {
   }
 
   deactive() {
-    const stage = this.manager.stage;
+    const stage = this.mapManager.stage;
 
     stage.draggable(true);
     stage.off('mousedown touchstart', this._mousedown);
@@ -29,7 +29,7 @@ export class FreeBrush extends BaseTool {
   isPaint = false;
   lastLine: Konva.Line | null = null;
   private _mousedown = (e: KonvaEventObject<any>) => {
-    const stage = this.manager.stage;
+    const stage = this.mapManager.stage;
 
     this.isPaint = true;
     const pos = this.getPointerPosFromStage();
@@ -43,7 +43,7 @@ export class FreeBrush extends BaseTool {
       points: [pos.x, pos.y],
     });
 
-    this.manager.getCurrentLayer().add(this.lastLine);
+    this.mapManager.getCurrentLayer().add(this.lastLine);
   };
 
   private _mouseup = () => {
@@ -52,8 +52,8 @@ export class FreeBrush extends BaseTool {
     if (_isNil(this.lastLine)) {
       return;
     }
-    const token = new FreeToken(this.manager, this.lastLine);
-    this.manager.addToken(token);
+    const token = new FreeToken(this.mapManager, this.lastLine);
+    this.mapManager.addToken(token);
   };
 
   private _mousemove = _throttle(() => {

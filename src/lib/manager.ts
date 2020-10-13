@@ -121,6 +121,7 @@ export class TiledMapManager {
   }
 
   switchTool = this.toolManager.switchTool.bind(this.toolManager);
+  setToolConfig = this.toolManager.setToolConfig.bind(this.toolManager);
 
   addToken(token: BaseToken) {
     const node = token.node;
