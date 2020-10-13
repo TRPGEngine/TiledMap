@@ -5,7 +5,7 @@ import { TiledBrush } from './TiledBrush';
 import _isNil from 'lodash/isNil';
 
 export interface ToolConfig {
-  [key: string]: string | number;
+  [key: string]: string | number | undefined;
 }
 
 export class ToolManager {

@@ -19,8 +19,8 @@ export abstract class BaseTool {
     return this.toolManager.tiledMapManager;
   }
 
-  get toolConfig(): ToolConfig {
-    return this.toolManager.currentToolConfig;
+  getToolConfig(key: string): ToolConfig[string] | undefined {
+    return this.toolManager.currentToolConfig[key];
   }
 
   /**

@@ -4,6 +4,9 @@ import _isNil from 'lodash/isNil';
 import { BRICK } from '../token/names';
 import Konva from 'konva';
 import { clipToGrid } from '../utils/snapGrid';
+import { ImageToken } from '../token/ImageToken';
+import type { Vector2d } from 'konva/types/types';
+import { vector2dEqual } from '../utils/vector2d';
 
 export class TiledBrush extends BaseTool {
   static toolName = 'tiledBrush';
@@ -28,43 +31,76 @@ export class TiledBrush extends BaseTool {
 
   drawing = false;
   drawedNode = new Set<Konva.Node>();
+  lastDrawPos: Vector2d | null = null; // 上一次绘制的坐标
   _mousedown = () => {
     this.drawing = true;
     this.drawedNode.clear();
+    this.lastDrawPos = null;
   };
   _mouseup = () => {
     this.drawing = false;
-    // TODO: 创建group token
+    this.lastDrawPos = null;
+    // TODO: 创建group token 并加入
     console.log(Array.from(this.drawedNode));
   };
-  _mousemove = _throttle(() => {
+  _mousemove = () => {
     if (this.drawing === false) {
       return;
     }
 
     const currentLayer = this.mapManager.getCurrentLayer();
+    const gridSize = this.mapManager.options.gridSize;
     const pos = this.getPointerPosFromStage();
     if (_isNil(pos)) {
       return;
     }
+
+    const drawPos = {
+      x: clipToGrid(pos.x, gridSize),
+      y: clipToGrid(pos.y, gridSize),
+    };
+
+    if (!_isNil(this.lastDrawPos) && vector2dEqual(drawPos, this.lastDrawPos)) {
+      // 如果还在上次的点上
+      // 则跳过
+      return;
+    }
+
     const node = currentLayer.getIntersection(pos);
     if (!_isNil(node) && node.hasName(BRICK)) {
-      // 销毁
+      // 销毁之前的
       this.drawedNode.delete(node);
       node.destroy();
     }
 
-    const gridSize = this.mapManager.options.gridSize;
-    const rect = new Konva.Rect({
-      x: clipToGrid(pos.x, gridSize),
-      y: clipToGrid(pos.y, gridSize),
+    const texture = this.getToolConfig('texture');
+    if (_isNil(texture)) {
+      // 如果没有设置绘制的东西则跳过创建逻辑
+      // 此时的行为是会删除
+      this.mapManager.getCurrentLayer().draw();
+      return;
+    }
+
+    const imageObj = new Image();
+    const image = new Konva.Image({
+      image: imageObj,
+      x: drawPos.x,
+      y: drawPos.y,
       width: gridSize,
       height: gridSize,
-      fill: 'red',
     });
-    rect.addName(BRICK);
-    currentLayer.add(rect); // TODO: 应该是token
-    this.drawedNode.add(rect);
-    rect.draw();
-  }, 50);
+    // 先用base64 一像素图片让其快速渲染占位, 然后再换成正常的图片
+    imageObj.src =
+      'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // 一像素白色图片
+    image.addName(BRICK);
+    this.mapManager.getCurrentLayer().add(image);
+    this.drawedNode.add(image);
+    this.lastDrawPos = drawPos;
+    image.draw();
+
+    imageObj.src = String(texture);
+    imageObj.onload = () => {
+      image.draw();
+    };
+  };
 }

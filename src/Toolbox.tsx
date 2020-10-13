@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import type { TiledMapManager } from './lib/manager';
+import type { ToolConfig } from './lib/tools/manager';
 
-const Root = styled.div`
-  display: flex;
+const Row = styled.div`
   padding: 4px;
+  display: flex;
 `;
 
 const Item = styled.div.attrs({
@@ -17,12 +18,10 @@ const Item = styled.div.attrs({
   cursor: pointer;
 `;
 
-interface Props {
-  tiledMapManagerRef: React.MutableRefObject<TiledMapManager | undefined>;
-}
-export const Toolbox: React.FC<Props> = React.memo((props) => {
-  const { tiledMapManagerRef } = props;
+function useToolbox({ tiledMapManagerRef }: Props) {
   const [currentTool, setCurrentTool] = useState('');
+  const [currentToolConfig, setCurrentToolConfig] = useState<ToolConfig>({});
+
   const handleSwitchTool = useCallback(
     (toolName: string) => {
       if (!tiledMapManagerRef.current) {
@@ -36,7 +35,9 @@ export const Toolbox: React.FC<Props> = React.memo((props) => {
       }
 
       const success = tiledMapManagerRef.current.switchTool(toolName);
-      if (!success) {
+      if (success) {
+        setCurrentToolConfig({});
+      } else {
         console.error('切换工具失败');
       }
     },
@@ -51,9 +52,42 @@ export const Toolbox: React.FC<Props> = React.memo((props) => {
     setCurrentTool(tiledMapManagerRef.current.getCurrentToolName());
   }, [tiledMapManagerRef.current]);
 
+  const handleSetToolConfig = useCallback(
+    (key: string, value: string | number | undefined) => {
+      setCurrentToolConfig({
+        ...currentToolConfig,
+        [key]: value,
+      });
+    },
+    [currentToolConfig],
+  );
+
+  useEffect(() => {
+    tiledMapManagerRef.current?.setToolConfig(currentToolConfig);
+  }, [currentToolConfig]);
+
+  return {
+    currentTool,
+    handleSwitchTool,
+    currentToolConfig,
+    handleSetToolConfig,
+  };
+}
+
+interface Props {
+  tiledMapManagerRef: React.MutableRefObject<TiledMapManager | undefined>;
+}
+export const Toolbox: React.FC<Props> = React.memo((props) => {
+  const {
+    currentTool,
+    handleSwitchTool,
+    currentToolConfig,
+    handleSetToolConfig,
+  } = useToolbox(props);
+
   return (
-    <Root>
-      <div>
+    <div>
+      <Row>
         <Item
           active={currentTool === 'freeBrush'}
           onClick={() => handleSwitchTool('freeBrush')}
@@ -66,10 +100,43 @@ export const Toolbox: React.FC<Props> = React.memo((props) => {
         >
           &#xe650;
         </Item>
-      </div>
+      </Row>
 
-      <div></div>
-    </Root>
+      <div>
+        {currentTool === 'tiledBrush' ? (
+          <Row>
+            <Item
+              active={currentToolConfig['texture'] === undefined}
+              onClick={() => handleSetToolConfig('texture', undefined)}
+            >
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  textAlign: 'center',
+                  lineHeight: '40px',
+                }}
+              >
+                清空
+              </div>
+            </Item>
+            {['earth', 'forest', 'grassland'].map((name) => {
+              const fullPath = `/image/tiles/${name}.jpg`;
+
+              return (
+                <Item
+                  key={name}
+                  active={currentToolConfig['texture'] === fullPath}
+                  onClick={() => handleSetToolConfig('texture', fullPath)}
+                >
+                  <img src={fullPath} width="40" height="40" />
+                </Item>
+              );
+            })}
+          </Row>
+        ) : null}
+      </div>
+    </div>
   );
 });
 Toolbox.displayName = 'Toolbox';
