@@ -1,4 +1,9 @@
 /**
+ * 是否可拖动
+ */
+export const DRAGGABLE = 'draggable';
+
+/**
  * 是否可变换的标识
  */
 export const TRANSFORMABLE = 'transformable';

@@ -21,7 +21,7 @@ export function getAttrs(
   if (node instanceof UrlImage) {
     return {
       name: node.getAttr('name'),
-      url: node.url,
+      url: node.getImageUrl(),
     };
   }
 

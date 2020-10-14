@@ -2,7 +2,7 @@ import type Konva from 'konva';
 import type { TiledMapManager } from '../manager';
 import shortid from 'shortid';
 import { buildGridSnapBound } from '../utils/buildGridSnapBound';
-import { SNAPGRIDTOKEN, TRANSFORMABLE } from './names';
+import { DRAGGABLE, SNAPGRIDTOKEN, TRANSFORMABLE } from './names';
 import { fixNumber } from '../utils/fixNumber';
 import type { BaseNotifyAttrs } from './types';
 
@@ -11,6 +11,7 @@ export interface TokenOptions {
   width?: number;
   height?: number;
   transformable?: boolean;
+  draggable?: boolean;
 }
 
 export class BaseToken<T extends Konva.Node = Konva.Shape> {
@@ -22,8 +23,13 @@ export class BaseToken<T extends Konva.Node = Konva.Shape> {
     options?: TokenOptions,
   ) {
     const gridSize = manager.options.gridSize;
-    const { id, width = gridSize, height = gridSize, transformable = true } =
-      options ?? {};
+    const {
+      id,
+      width = gridSize,
+      height = gridSize,
+      transformable = true,
+      draggable = true,
+    } = options ?? {};
 
     if (typeof id !== 'string') {
       this.id = shortid();
@@ -34,7 +40,10 @@ export class BaseToken<T extends Konva.Node = Konva.Shape> {
     this.node.width(width);
     this.node.height(height);
 
-    this.node.draggable(true);
+    if (draggable === true) {
+      this.node.draggable(true);
+      this.node.addName(DRAGGABLE);
+    }
     if (this.snapGrid === true) {
       // 贴合到网格
       this.node.dragBoundFunc(buildGridSnapBound(gridSize));

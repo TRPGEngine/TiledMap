@@ -4,6 +4,7 @@ import { BaseTool } from './BaseTool';
 import _throttle from 'lodash/throttle';
 import _isNil from 'lodash/isNil';
 import { FreeToken } from '../token/FreeToken';
+import { DRAGGABLE } from '../token/names';
 
 export class FreeBrush extends BaseTool {
   static toolName = 'freeBrush';
@@ -12,6 +13,9 @@ export class FreeBrush extends BaseTool {
     const stage = this.mapManager.stage;
 
     stage.draggable(false);
+    stage.find(`.${DRAGGABLE}`).each((node) => {
+      node.draggable(false);
+    });
     stage.on('mousedown touchstart', this._mousedown);
     stage.on('mouseup touchend', this._mouseup);
     stage.on('mousemove touchmove', this._mousemove);
@@ -21,6 +25,7 @@ export class FreeBrush extends BaseTool {
     const stage = this.mapManager.stage;
 
     stage.draggable(true);
+    stage.find(`.${DRAGGABLE}`).each((node) => node.draggable(true));
     stage.off('mousedown touchstart', this._mousedown);
     stage.off('mouseup touchend', this._mouseup);
     stage.off('mousemove touchmove', this._mousemove);
