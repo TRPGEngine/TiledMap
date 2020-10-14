@@ -4,23 +4,26 @@ import shortid from 'shortid';
 import { buildGridSnapBound } from '../utils/buildGridSnapBound';
 import { SNAPGRIDTOKEN, TRANSFORMABLE } from './names';
 import { fixNumber } from '../utils/fixNumber';
+import type { BaseNotifyAttrs } from './types';
 
 export interface TokenOptions {
-  id: string;
+  id?: string;
   width?: number;
   height?: number;
+  transformable?: boolean;
 }
 
-export class BaseToken {
+export class BaseToken<T extends Konva.Node = Konva.Shape> {
   id: string;
 
   constructor(
     public manager: TiledMapManager,
-    public node: Konva.Shape,
+    public node: T,
     options?: TokenOptions,
   ) {
     const gridSize = manager.options.gridSize;
-    const { id, width = gridSize, height = gridSize } = options ?? {};
+    const { id, width = gridSize, height = gridSize, transformable = true } =
+      options ?? {};
 
     if (typeof id !== 'string') {
       this.id = shortid();
@@ -38,10 +41,11 @@ export class BaseToken {
       this.node.addName(SNAPGRIDTOKEN); // 贴合网格的Token
     }
 
-    // 可变换
-    this.node.addName(TRANSFORMABLE);
+    if (transformable === true) {
+      // 可变换
+      this.node.addName(TRANSFORMABLE);
+    }
 
-    manager.notify('add', this.getAttrs());
     this.initEvent();
   }
 
@@ -50,6 +54,9 @@ export class BaseToken {
   }
 
   initEvent() {
+    // 初始化事件时先通知服务器该Token被添加
+    this.manager.notify('add', this.getAttrs());
+
     let startPos: Konva.Vector2d | null = null;
     this.node.on('dragstart', (e) => {
       startPos = e.currentTarget.position();
@@ -75,7 +82,7 @@ export class BaseToken {
   /**
    * 获取Token传输的信息
    */
-  getAttrs() {
+  getAttrs(): BaseNotifyAttrs {
     const id = this.id;
     const pos = this.node.position();
     const size = this.node.size();

@@ -4,9 +4,9 @@ import _isNil from 'lodash/isNil';
 import { BRICK } from '../token/names';
 import Konva from 'konva';
 import { clipToGrid } from '../utils/snapGrid';
-import { ImageToken } from '../token/ImageToken';
 import type { Vector2d } from 'konva/types/types';
 import { vector2dEqual } from '../utils/vector2d';
+import { UrlImage } from '../shape/UrlImage';
 
 export class TiledBrush extends BaseTool {
   static toolName = 'tiledBrush';
@@ -30,7 +30,7 @@ export class TiledBrush extends BaseTool {
   }
 
   drawing = false;
-  drawedNode = new Set<Konva.Node>();
+  drawedNode = new Set<Konva.Shape>();
   lastDrawPos: Vector2d | null = null; // 上一次绘制的坐标
   _mousedown = () => {
     this.drawing = true;
@@ -41,7 +41,9 @@ export class TiledBrush extends BaseTool {
     this.drawing = false;
     this.lastDrawPos = null;
     // TODO: 创建group token 并加入
-    console.log(Array.from(this.drawedNode));
+
+    const nodes = Array.from(this.drawedNode);
+    this.mapManager.getCurrentLayer().brickGroup.addShape(...nodes);
   };
   _mousemove = () => {
     if (this.drawing === false) {
@@ -66,8 +68,10 @@ export class TiledBrush extends BaseTool {
       return;
     }
 
-    const node = currentLayer.getRenderLayer().getIntersection(pos);
-    if (!_isNil(node) && node.hasName(BRICK)) {
+    const node = currentLayer
+      .getRenderLayer()
+      .getIntersection(pos, `.${BRICK}`);
+    if (!_isNil(node) && node instanceof Konva.Shape && node.hasName(BRICK)) {
       // 销毁之前的
       this.drawedNode.delete(node);
       node.destroy();
@@ -81,26 +85,16 @@ export class TiledBrush extends BaseTool {
       return;
     }
 
-    const imageObj = new Image();
-    const image = new Konva.Image({
-      image: imageObj,
+    const image = new UrlImage(String(texture), {
       x: drawPos.x,
       y: drawPos.y,
       width: gridSize,
       height: gridSize,
     });
-    // 先用base64 一像素图片让其快速渲染占位, 然后再换成正常的图片
-    imageObj.src =
-      'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // 一像素白色图片
     image.addName(BRICK);
     this.mapManager.getCurrentLayer().getRenderLayer().add(image);
     this.drawedNode.add(image);
     this.lastDrawPos = drawPos;
     image.draw();
-
-    imageObj.src = String(texture);
-    imageObj.onload = () => {
-      image.draw();
-    };
   };
 }

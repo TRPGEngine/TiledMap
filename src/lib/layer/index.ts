@@ -3,7 +3,7 @@ import type { TiledMapManager } from '../manager';
 import { BaseLayer } from './BaseLayer';
 
 export class LayerManager {
-  defaultLayer = new BaseLayer({
+  defaultLayer = new BaseLayer(this, {
     name: 'defaultLayer',
   });
   currentLayer = this.defaultLayer;
