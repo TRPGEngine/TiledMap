@@ -2,7 +2,7 @@ import type { BaseNotifyAttrs } from './token/types';
 import Konva from 'konva';
 import type { BaseToken } from './token/BaseToken';
 import { buildTiledMapStage } from './stage';
-import { SNAPGRIDTOKEN, TRANSFORMABLE } from './token/names';
+import { SNAPGRIDTOKEN, TRANSFORMABLE, DRAGGABLE } from './token/names';
 import { buildGridSnapBoundBox } from './utils/buildGridSnapBound';
 import _isNil from 'lodash/isNil';
 import { ToolManager } from './tools/manager';
@@ -49,6 +49,15 @@ export class TiledMapManager {
 
     // clicks should select/deselect shapes
     stage.on('click tap', function (e) {
+      // 处理旧节点
+      const oldNodes = tr.nodes();
+      oldNodes.forEach((node) => {
+        if (node.hasName(DRAGGABLE)) {
+          // 把旧节点全置为不可拖动
+          node.draggable(false);
+        }
+      });
+
       // if click on empty area - remove all selections
       if (e.target === stage) {
         tr.nodes([]);
@@ -87,6 +96,15 @@ export class TiledMapManager {
         const nodes = tr.nodes().concat([e.target]);
         tr.nodes(nodes);
       }
+
+      // 处理新节点
+      const newNodes = tr.nodes();
+      newNodes.forEach((node) => {
+        if (node.hasName(DRAGGABLE)) {
+          // 把旧节点全置为不可拖动
+          node.draggable(true);
+        }
+      });
       tr.getLayer()?.draw();
     });
 
@@ -156,5 +174,13 @@ export class TiledMapManager {
 
   draw() {
     this.stage.draw();
+  }
+
+  /**
+   * 设置当前指针
+   * @param cursor 指针样式
+   */
+  setCursor(cursor: string) {
+    this.stage.container().style.cursor = cursor;
   }
 }

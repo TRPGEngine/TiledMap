@@ -41,7 +41,6 @@ export class BaseToken<T extends Konva.Node = Konva.Shape> {
     this.node.height(height);
 
     if (draggable === true) {
-      this.node.draggable(true);
       this.node.addName(DRAGGABLE);
     }
     if (this.snapGrid === true) {
@@ -85,6 +84,17 @@ export class BaseToken<T extends Konva.Node = Konva.Shape> {
 
     this.node.on('transformend', (e) => {
       this.manager.notify('update', this.getAttrs());
+    });
+
+    this.node.on('mouseenter', (e) => {
+      if (this.node.draggable()) {
+        this.manager.setCursor('move');
+      }
+    });
+    this.node.on('mouseleave', (e) => {
+      if (this.node.draggable()) {
+        this.manager.setCursor('default');
+      }
     });
   }
 
