@@ -99,6 +99,14 @@ export class BaseToken<T extends Konva.Node = Konva.Shape> {
   }
 
   /**
+   * 移除节点
+   */
+  remove() {
+    this.node.remove();
+    this.manager.notify('remove', this.getAttrs());
+  }
+
+  /**
    * 获取Token传输的信息
    */
   getAttrs(): BaseNotifyAttrs {

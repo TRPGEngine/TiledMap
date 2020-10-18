@@ -44,6 +44,7 @@ export class TiledMapManager {
 
   initStageEvent() {
     const stage = this.stage;
+    const container = stage.container();
     const tr = this.tr;
     const gridSize = this.options.gridSize;
 
@@ -106,6 +107,21 @@ export class TiledMapManager {
         }
       });
       tr.getLayer()?.draw();
+    });
+
+    container.focus();
+    container.tabIndex = 1;
+    container.style.outline = 'none';
+    container.addEventListener('keydown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      console.log(e);
+      if (e.code === 'Backspace' || e.code === 'Delete') {
+        if (tr.nodes().length > 0) {
+          // TODO: 查找相应的Token
+        }
+      }
     });
 
     // // 场景缩放
