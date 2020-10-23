@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import type { TiledMapManager } from './lib/manager';
 import type { ToolConfig } from './lib/tools/manager';
+import imageMap from './image-map.json';
 
 const Row = styled.div`
   padding: 4px;
@@ -120,9 +121,7 @@ export const Toolbox: React.FC<Props> = React.memo((props) => {
                 清空
               </div>
             </Item>
-            {['earth', 'forest', 'grassland'].map((name) => {
-              const fullPath = `/image/tiles/${name}.jpg`;
-
+            {Object.entries(imageMap.tiles).map(([name, fullPath]) => {
               return (
                 <Item
                   key={name}
