@@ -113,14 +113,18 @@ export class TiledMapManager {
     container.tabIndex = 1;
     container.style.outline = 'none';
     container.addEventListener('keydown', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      console.log(e);
+      let isHandled = true;
       if (e.code === 'Backspace' || e.code === 'Delete') {
         if (tr.nodes().length > 0) {
           // TODO: 查找相应的Token
         }
+      } else {
+        isHandled = false;
+      }
+
+      if (isHandled) {
+        e.preventDefault();
+        e.stopPropagation();
       }
     });
 

@@ -3,6 +3,8 @@ import type { BaseTool } from './BaseTool';
 import { FreeBrush } from './FreeBrush';
 import { TiledBrush } from './TiledBrush';
 import _isNil from 'lodash/isNil';
+import { LineTool } from './LineTool';
+import { getAllTools } from './__all__';
 
 export interface ToolConfig {
   [key: string]: string | number | undefined;
@@ -21,8 +23,13 @@ export class ToolManager {
   }
 
   initTools() {
-    this.tools[FreeBrush.toolName] = new FreeBrush(this);
-    this.tools[TiledBrush.toolName] = new TiledBrush(this);
+    for (let Cls of getAllTools()) {
+      if (typeof Cls.toolName === 'undefined') {
+        throw new Error('注册工具失败， 缺少工具名');
+      }
+
+      this.tools[Cls.toolName] = new Cls(this);
+    }
   }
 
   /**

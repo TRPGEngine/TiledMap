@@ -1,23 +1,24 @@
+import { BaseTool } from './BaseTool';
 import Konva from 'konva';
 import type { KonvaEventObject } from 'konva/types/Node';
-import { BaseTool } from './BaseTool';
-import _throttle from 'lodash/throttle';
+import { BaseToken } from '../token/BaseToken';
 import _isNil from 'lodash/isNil';
-import { FreeToken } from '../token/FreeToken';
+import _throttle from 'lodash/throttle';
 
-export class FreeBrush extends BaseTool {
-  static toolName = 'freeBrush';
+export class LineTool extends BaseTool {
+  static toolName = 'lineTool';
 
-  active() {
+  active(): void {
     const stage = this.mapManager.stage;
 
     this.setStageDraggable(false);
+
     stage.on('mousedown touchstart', this._mousedown);
     stage.on('mouseup touchend', this._mouseup);
     stage.on('mousemove touchmove', this._mousemove);
   }
 
-  deactive() {
+  deactive(): void {
     const stage = this.mapManager.stage;
 
     this.setStageDraggable(true);
@@ -27,43 +28,41 @@ export class FreeBrush extends BaseTool {
   }
 
   isPaint = false;
-  lastLine: Konva.Line | null = null;
+  currentLine: Konva.Line | null = null;
   private _mousedown = (e: KonvaEventObject<any>) => {
-    const stage = this.mapManager.stage;
-
     this.isPaint = true;
     const pos = this.getPointerPosFromStage();
     if (pos === null) {
       return;
     }
-    this.lastLine = new Konva.Line({
+    this.currentLine = new Konva.Line({
       stroke: '#df4b26',
       strokeWidth: 5,
       globalCompositeOperation: 'source-over',
       points: [pos.x, pos.y],
     });
 
-    this.mapManager.getCurrentLayer().getRenderLayer().add(this.lastLine);
+    this.mapManager.getCurrentLayer().getRenderLayer().add(this.currentLine);
   };
 
   private _mouseup = () => {
     this.isPaint = false;
 
-    if (_isNil(this.lastLine)) {
+    if (_isNil(this.currentLine)) {
       return;
     }
-    const token = new FreeToken(this.mapManager, this.lastLine);
+    const token = new BaseToken(this.mapManager, this.currentLine);
     this.mapManager.addToken(token);
   };
 
   private _mousemove = _throttle(() => {
-    const lastLine = this.lastLine;
+    const currentLine = this.currentLine;
 
     if (!this.isPaint) {
       return;
     }
 
-    if (lastLine === null) {
+    if (currentLine === null) {
       return;
     }
 
@@ -72,9 +71,10 @@ export class FreeBrush extends BaseTool {
       return;
     }
 
-    const newPoints = lastLine.points().concat([pos.x, pos.y]);
-    lastLine.points(newPoints);
-    // this.manager.currentLayer.batchDraw();
-    lastLine.draw();
+    const newPoints = currentLine.points();
+    newPoints[2] = pos.x;
+    newPoints[3] = pos.y;
+    currentLine.points(newPoints);
+    this.mapManager.getCurrentLayer().getRenderLayer().batchDraw();
   }, 50);
 }

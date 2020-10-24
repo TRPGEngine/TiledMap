@@ -4,6 +4,8 @@ import type { ToolManager, ToolConfig } from './manager';
 import { DRAGGABLE } from '../token/names';
 
 export abstract class BaseTool {
+  static toolName: string;
+
   constructor(public toolManager: ToolManager) {}
 
   /**
