@@ -12,10 +12,7 @@ export class FreeBrush extends BaseTool {
   active() {
     const stage = this.mapManager.stage;
 
-    stage.draggable(false);
-    stage.find(`.${DRAGGABLE}`).each((node) => {
-      node.draggable(false);
-    });
+    this.setStageDraggable(false);
     stage.on('mousedown touchstart', this._mousedown);
     stage.on('mouseup touchend', this._mouseup);
     stage.on('mousemove touchmove', this._mousemove);
@@ -24,8 +21,7 @@ export class FreeBrush extends BaseTool {
   deactive() {
     const stage = this.mapManager.stage;
 
-    stage.draggable(true);
-    stage.find(`.${DRAGGABLE}`).each((node) => node.draggable(true));
+    this.setStageDraggable(true);
     stage.off('mousedown touchstart', this._mousedown);
     stage.off('mouseup touchend', this._mouseup);
     stage.off('mousemove touchmove', this._mousemove);

@@ -14,7 +14,7 @@ export class TiledBrush extends BaseTool {
   active() {
     const stage = this.mapManager.stage;
 
-    stage.draggable(false);
+    this.setStageDraggable(false);
     stage.on('mousedown touchstart', this._mousedown);
     stage.on('mouseup touchend', this._mouseup);
     stage.on('mousemove touchmove', this._mousemove);
@@ -23,7 +23,7 @@ export class TiledBrush extends BaseTool {
   deactive() {
     const stage = this.mapManager.stage;
 
-    stage.draggable(true);
+    this.setStageDraggable(true);
     stage.off('mousedown touchstart', this._mousedown);
     stage.off('mouseup touchend', this._mouseup);
     stage.off('mousemove touchmove', this._mousemove);

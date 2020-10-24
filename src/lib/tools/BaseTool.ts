@@ -1,6 +1,7 @@
 import type { Vector2d } from 'konva/types/types';
 import _isNil from 'lodash/isNil';
 import type { ToolManager, ToolConfig } from './manager';
+import { DRAGGABLE } from '../token/names';
 
 export abstract class BaseTool {
   constructor(public toolManager: ToolManager) {}
@@ -38,5 +39,18 @@ export abstract class BaseTool {
       x: pointerPos.x - stagePos.x,
       y: pointerPos.y - stagePos.y,
     };
+  }
+
+  /**
+   * 设置场景内容是否可拖动
+   * @param draggable 是否可拖动
+   */
+  protected setStageDraggable(shouldDraggable: boolean) {
+    const stage = this.mapManager.stage;
+
+    stage.draggable(shouldDraggable);
+    stage.find(`.${DRAGGABLE}`).each((node) => {
+      node.draggable(shouldDraggable);
+    });
   }
 }
