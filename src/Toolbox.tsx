@@ -86,21 +86,29 @@ export const Toolbox: React.FC<Props> = React.memo((props) => {
     handleSetToolConfig,
   } = useToolbox(props);
 
+  const buildToolItem = useCallback(
+    (toolName: string, icon: React.ReactElement) => {
+      return (
+        <Item
+          active={currentTool === toolName}
+          onClick={() => handleSwitchTool(toolName)}
+        >
+          {icon}
+        </Item>
+      );
+    },
+    [handleSwitchTool],
+  );
+
   return (
     <div>
       <Row>
-        <Item
-          active={currentTool === 'freeBrush'}
-          onClick={() => handleSwitchTool('freeBrush')}
-        >
-          &#xe8b4;
-        </Item>
-        <Item
-          active={currentTool === 'tiledBrush'}
-          onClick={() => handleSwitchTool('tiledBrush')}
-        >
-          &#xe650;
-        </Item>
+        {buildToolItem('freeBrush', <span>&#xe8b4;</span>)}
+        {buildToolItem('lineTool', <span>&#xe7fd;</span>)}
+        {buildToolItem('rectTool', <span>&#xe7f9;</span>)}
+        {buildToolItem('circleTool', <span>&#xe803;</span>)}
+        {buildToolItem('polygonTool', <span>&#xe67b;</span>)}
+        {buildToolItem('tiledBrush', <span> &#xe650;</span>)}
       </Row>
 
       <div>
