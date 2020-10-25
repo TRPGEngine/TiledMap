@@ -40,9 +40,11 @@ export class PolygonTool extends BaseTool {
         strokeWidth: 5,
         globalCompositeOperation: 'source-over',
         points: [pos.x, pos.y, pos.x, pos.y],
+        lineJoin: 'round',
       });
 
       this.mapManager.getCurrentLayer().getRenderLayer().add(this.currentLine);
+      this.currentLine.draw();
     } else {
       // 正在绘制
       const pos = this.getPointerPosFromStage();
@@ -58,6 +60,7 @@ export class PolygonTool extends BaseTool {
       newPoints.push(pos.x, pos.y);
 
       this.currentLine.points(newPoints);
+      this.currentLine.draw();
     }
   };
 
