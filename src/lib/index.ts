@@ -17,25 +17,24 @@ export function initTiledMap(
 ): TiledMapManager {
   const tiledMapManager = new TiledMapManager(el, options);
 
-  const rect = new Konva.Rect({
-    x: 80,
-    y: 80,
-    width: 120,
-    height: 120,
-    fill: 'red',
-  });
+  // const rect = new Konva.Rect({
+  //   x: 80,
+  //   y: 80,
+  //   width: 120,
+  //   height: 120,
+  //   fill: 'red',
+  // });
+  // const token = new BaseToken(tiledMapManager, rect);
 
-  const token = new BaseToken(tiledMapManager, rect);
+  // const imageToken = ImageToken.createByUrl(
+  //   tiledMapManager,
+  //   'https://www.makeamap.cn/s/ranking/info/map?map_id=7d6a9282-631b-4156-94ae-ddaee876ac62&hd=1&wm=1',
+  //   40,
+  //   40,
+  // );
 
-  const imageToken = ImageToken.createByUrl(
-    tiledMapManager,
-    'https://www.makeamap.cn/s/ranking/info/map?map_id=7d6a9282-631b-4156-94ae-ddaee876ac62&hd=1&wm=1',
-    40,
-    40,
-  );
-
-  tiledMapManager.addToken(token);
-  tiledMapManager.addToken(imageToken);
+  // tiledMapManager.addToken(token);
+  // tiledMapManager.addToken(imageToken);
   tiledMapManager.draw();
 
   return tiledMapManager;

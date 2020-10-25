@@ -5,6 +5,7 @@ import { buildGridSnapBound } from '../utils/buildGridSnapBound';
 import { DRAGGABLE, SNAPGRIDTOKEN, TRANSFORMABLE } from './names';
 import { fixNumber } from '../utils/fixNumber';
 import type { BaseNotifyAttrs } from './types';
+import _isNil from 'lodash/isNil';
 
 export interface TokenOptions {
   id?: string;
@@ -37,8 +38,12 @@ export class BaseToken<T extends Konva.Node = Konva.Shape> {
       this.id = id;
     }
 
-    this.node.width(width);
-    this.node.height(height);
+    if (_isNil(this.node.width())) {
+      this.node.width(width);
+    }
+    if (_isNil(this.node.height())) {
+      this.node.height(height);
+    }
 
     if (draggable === true) {
       this.node.addName(DRAGGABLE);

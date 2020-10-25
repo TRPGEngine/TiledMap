@@ -3,6 +3,7 @@ import { FreeBrush } from './FreeBrush';
 import { TiledBrush } from './TiledBrush';
 import { LineTool } from './LineTool';
 import type { ToolManager } from './manager';
+import { RectTool } from './RectTool';
 
 interface ToolCls {
   toolName: string;
@@ -23,3 +24,4 @@ export function getAllTools(): ToolCls[] {
 reg(FreeBrush);
 reg(TiledBrush);
 reg(LineTool);
+reg(RectTool);
