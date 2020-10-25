@@ -5,6 +5,7 @@ import { LineTool } from './LineTool';
 import type { ToolManager } from './manager';
 import { RectTool } from './RectTool';
 import { CircleTool } from './CircleTool';
+import { PolygonTool } from './PolygonTool';
 
 interface ToolCls {
   toolName: string;
@@ -27,3 +28,4 @@ reg(TiledBrush);
 reg(LineTool);
 reg(RectTool);
 reg(CircleTool);
+reg(PolygonTool);
