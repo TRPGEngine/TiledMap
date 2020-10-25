@@ -1,9 +1,13 @@
 import type { Vector2d } from 'konva/types/types';
 
+export function buildVector2d(x: number, y: number): Vector2d {
+  return { x, y };
+}
+
 /**
  * 计算相等
  */
-export function vector2dEqual(a: Vector2d, b: Vector2d) {
+export function vector2dEqual(a: Vector2d, b: Vector2d): boolean {
   return a.x === b.x && a.y === b.y;
 }
 

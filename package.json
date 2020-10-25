@@ -6,7 +6,7 @@
   "scripts": {
     "start": "snowpack dev",
     "build": "snowpack build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -27,14 +27,17 @@
     "@babel/preset-typescript": "^7.10.4",
     "@snowpack/plugin-react-refresh": "^2.3.1",
     "@snowpack/plugin-typescript": "^1.0.1",
+    "@types/jest": "^26.0.15",
     "@types/lodash": "^4.14.162",
     "@types/react": "^16.9.51",
     "@types/react-dom": "^16.9.8",
     "@types/shortid": "^0.0.29",
     "@types/snowpack-env": "^2.3.0",
     "@types/styled-components": "^5.1.4",
+    "jest": "^26.6.1",
     "prettier": "^2.1.2",
     "snowpack": "^2.13.3",
+    "ts-jest": "^26.4.2",
     "typescript": "^4.0.3"
   },
   "dependencies": {
