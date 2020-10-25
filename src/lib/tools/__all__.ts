@@ -4,6 +4,7 @@ import { TiledBrush } from './TiledBrush';
 import { LineTool } from './LineTool';
 import type { ToolManager } from './manager';
 import { RectTool } from './RectTool';
+import { CircleTool } from './CircleTool';
 
 interface ToolCls {
   toolName: string;
@@ -25,3 +26,4 @@ reg(FreeBrush);
 reg(TiledBrush);
 reg(LineTool);
 reg(RectTool);
+reg(CircleTool);

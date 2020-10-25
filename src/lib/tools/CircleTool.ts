@@ -4,9 +4,10 @@ import type { KonvaEventObject } from 'konva/types/Node';
 import { BaseToken } from '../token/BaseToken';
 import _isNil from 'lodash/isNil';
 import _throttle from 'lodash/throttle';
+import { vector2dDistance } from '../utils/vector2d';
 
-export class RectTool extends BaseTool {
-  static toolName = 'rectTool';
+export class CircleTool extends BaseTool {
+  static toolName = 'circleTool';
 
   active(): void {
     const stage = this.mapManager.stage;
@@ -28,44 +29,43 @@ export class RectTool extends BaseTool {
   }
 
   isPaint = false;
-  currentRect: Konva.Rect | null = null;
+  currentCircle: Konva.Circle | null = null;
   private _mousedown = (e: KonvaEventObject<any>) => {
     this.isPaint = true;
     const pos = this.getPointerPosFromStage();
     if (pos === null) {
       return;
     }
-    this.currentRect = new Konva.Rect({
+    this.currentCircle = new Konva.Circle({
       stroke: '#df4b26',
       strokeWidth: 5,
       globalCompositeOperation: 'source-over',
       x: pos.x,
       y: pos.y,
-      width: 0,
-      height: 0,
+      radius: 1,
     });
 
-    this.mapManager.getCurrentLayer().getRenderLayer().add(this.currentRect);
+    this.mapManager.getCurrentLayer().getRenderLayer().add(this.currentCircle);
   };
 
   private _mouseup = () => {
     this.isPaint = false;
 
-    if (_isNil(this.currentRect)) {
+    if (_isNil(this.currentCircle)) {
       return;
     }
-    const token = new BaseToken(this.mapManager, this.currentRect);
+    const token = new BaseToken(this.mapManager, this.currentCircle);
     this.mapManager.addToken(token);
   };
 
   private _mousemove = _throttle(() => {
-    const currentRect = this.currentRect;
+    const currentCircle = this.currentCircle;
 
     if (!this.isPaint) {
       return;
     }
 
-    if (currentRect === null) {
+    if (currentCircle === null) {
       return;
     }
 
@@ -74,8 +74,9 @@ export class RectTool extends BaseTool {
       return;
     }
 
-    currentRect.width(pos.x - currentRect.x());
-    currentRect.height(pos.y - currentRect.y());
+    const radius = vector2dDistance(pos, currentCircle.position());
+
+    currentCircle.radius(radius);
     this.mapManager.getCurrentLayer().getRenderLayer().batchDraw();
   }, 50);
 }
