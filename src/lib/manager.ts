@@ -11,7 +11,9 @@ import type { BaseLayer } from './layer/BaseLayer';
 
 type NotifyType = 'add' | 'update' | 'remove';
 
-interface TiledMapManagerOptions {
+export interface TiledMapManagerOptions {
+  width: number;
+  height: number;
   gridNum: number; // 网格数
   gridSize: number; // 底部网格大小
 }
@@ -24,8 +26,8 @@ export class TiledMapManager {
   layerManager: LayerManager;
 
   constructor(el: HTMLDivElement, public options: TiledMapManagerOptions) {
-    const { gridNum, gridSize } = options;
-    const stage = buildTiledMapStage(el, gridNum, gridSize);
+    const { width, height, gridNum, gridSize } = options;
+    const stage = buildTiledMapStage(el, width, height, gridNum, gridSize);
     this.stage = stage;
 
     this.layerManager = new LayerManager(this);

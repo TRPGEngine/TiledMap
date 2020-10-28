@@ -6,13 +6,15 @@ import { buildBaseGridLayer } from './BaseGrid';
  */
 export function buildTiledMapStage(
   el: HTMLDivElement,
+  width: number,
+  height: number,
   gridNum: number,
   gridSize: number,
 ): Konva.Stage {
   const stage = new Konva.Stage({
     container: el,
-    width: 500,
-    height: 500,
+    width,
+    height,
     draggable: true,
   });
 

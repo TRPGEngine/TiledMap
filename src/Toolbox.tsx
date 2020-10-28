@@ -103,6 +103,7 @@ export const Toolbox: React.FC<Props> = React.memo((props) => {
   return (
     <div>
       <Row>
+        {buildToolItem('', <span>&#xe65c;</span>)}
         {buildToolItem('freeBrush', <span>&#xe8b4;</span>)}
         {buildToolItem('lineTool', <span>&#xe7fd;</span>)}
         {buildToolItem('rectTool', <span>&#xe7f9;</span>)}

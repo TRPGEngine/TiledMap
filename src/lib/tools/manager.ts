@@ -43,6 +43,13 @@ export class ToolManager {
       prevTool.deactive();
     }
 
+    if (toolName === '') {
+      // 工具置空(无工具)
+      this.currentToolName = '';
+      this.currentToolConfig = {}; // 配置项置空
+      return true;
+    }
+
     if (toolName === this.currentToolName) {
       // 取消选择
       this.currentToolName = '';

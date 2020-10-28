@@ -1,9 +1,11 @@
 import Konva from 'konva';
-import { TiledMapManager } from './manager';
+import { TiledMapManager, TiledMapManagerOptions } from './manager';
 import { BaseToken } from './token/BaseToken';
 import { ImageToken } from './token/ImageToken';
 
-const defaultOptions = {
+const defaultOptions: TiledMapManagerOptions = {
+  width: 500, // 画布宽度
+  height: 500, // 画布高度
   gridNum: 20, // 网格数
   gridSize: 40, // 底部网格大小
 };
@@ -13,9 +15,12 @@ const defaultOptions = {
  */
 export function initTiledMap(
   el: HTMLDivElement,
-  options = defaultOptions,
+  options?: Partial<TiledMapManagerOptions>,
 ): TiledMapManager {
-  const tiledMapManager = new TiledMapManager(el, options);
+  const tiledMapManager = new TiledMapManager(el, {
+    ...defaultOptions,
+    ...options,
+  });
 
   // const rect = new Konva.Rect({
   //   x: 80,
