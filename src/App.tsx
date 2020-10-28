@@ -5,8 +5,10 @@ import styled from 'styled-components';
 import { LayerPanel } from './LayerPanel';
 import { useTiledManagerRef } from './TiledManagerContext';
 
-const Row = styled.div`
+const Container = styled.div`
   display: flex;
+  height: 100vh;
+  width: 100vw;
 `;
 
 export const App: React.FC = React.memo(() => {
@@ -23,14 +25,14 @@ export const App: React.FC = React.memo(() => {
 
   return (
     <div className="App">
-      <Row>
+      <Container>
         <LayerPanel />
 
         <div>
           <Toolbox tiledMapManagerRef={tiledMapManagerRef} />
           <div ref={containerRef} style={{ backgroundColor: 'white' }}></div>
         </div>
-      </Row>
+      </Container>
     </div>
   );
 });

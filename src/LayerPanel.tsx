@@ -4,6 +4,7 @@ import { useTiledMap } from './TiledManagerContext';
 
 const Root = styled.div`
   width: 120px;
+  border-right: 1px solid #ccc;
 `;
 
 export const LayerPanel: React.FC = React.memo(() => {
