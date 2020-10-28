@@ -8,6 +8,7 @@ import _isNil from 'lodash/isNil';
 import { ToolManager } from './tools/manager';
 import { LayerManager } from './layer';
 import type { BaseLayer } from './layer/BaseLayer';
+import { EventBus } from './event';
 
 type NotifyType = 'add' | 'update' | 'remove';
 
@@ -22,6 +23,7 @@ export class TiledMapManager {
   stage: Konva.Stage;
   tr: Konva.Transformer;
 
+  eventBus = new EventBus(); // 事件中心
   toolManager = new ToolManager(this);
   layerManager: LayerManager;
 
