@@ -2,10 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './App';
 import './index.css';
+import { TiledManagerProvider } from './TiledManagerContext';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <TiledManagerProvider>
+      <App />
+    </TiledManagerProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 );

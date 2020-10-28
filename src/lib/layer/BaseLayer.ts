@@ -4,6 +4,12 @@ import type { LayerManager } from '.';
 import type { BaseToken } from '../token/BaseToken';
 import { BrickLayerToken } from '../token/BrickLayerToken';
 
+declare module 'konva/types/Layer' {
+  interface Layer {
+    tiledLayer?: BaseLayer;
+  }
+}
+
 interface LayerOptions extends LayerConfig {}
 
 export class BaseLayer {
@@ -12,6 +18,7 @@ export class BaseLayer {
 
   constructor(manager: LayerManager, options?: LayerOptions) {
     this.render = new Konva.Layer(options);
+    this.render.tiledLayer = this;
     this.brickGroup = new BrickLayerToken(manager.tiledMapManager);
 
     this.render.add(this.brickGroup.groupNode);

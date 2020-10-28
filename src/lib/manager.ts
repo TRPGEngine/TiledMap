@@ -173,7 +173,7 @@ export class TiledMapManager {
    * @param layer 层
    */
   addLayer(layer: BaseLayer) {
-    this.stage.add(layer.getRenderLayer());
+    this.layerManager.addLayer(layer);
   }
 
   /**
