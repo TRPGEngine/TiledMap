@@ -206,6 +206,20 @@ export class TiledMapManager {
     this.eventBus.fire('layerChange', { type, attrs });
   }
 
+  setCurrentLayer(layer: BaseLayer) {
+    this.layerManager.currentLayer = layer;
+    this.eventBus.fire('layerSelected', { layerId: layer.layerId });
+  }
+
+  setCurrentLayerId(layerId: string) {
+    const layer = this.layerManager.findLayerById(layerId);
+    if (!layer) {
+      return;
+    }
+
+    this.setCurrentLayer(layer);
+  }
+
   draw() {
     this.stage.draw();
   }

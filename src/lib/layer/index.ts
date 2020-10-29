@@ -43,4 +43,12 @@ export class LayerManager {
       (layer) => layer instanceof BaseLayer,
     ) as BaseLayer[];
   }
+
+  /**
+   * 查找层ID
+   * @param layerId 层ID
+   */
+  findLayerById(layerId: string): BaseLayer | null {
+    return this.getLayers().find((b) => b.layerId === layerId) ?? null;
+  }
 }

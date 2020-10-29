@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import type { BaseLayer } from './lib/layer/BaseLayer';
-import { useTiledManager, useTiledMap } from './TiledManagerContext';
+import { BaseLayer } from './lib/layer/BaseLayer';
+import { useTiledManager } from './TiledManagerContext';
 
 const Root = styled.div`
   width: 240px;
@@ -13,11 +13,15 @@ const Title = styled.div`
   padding: 4px 6px;
 `;
 
-const Item = styled.div`
+const Item = styled.div<{
+  active: boolean;
+}>`
   width: 100%;
   line-height: 24px;
   border-top: 1px solid #ccc;
   padding: 4px 6px;
+
+  ${(props) => (props.active ? 'background-color: rgba(0, 0, 0, 0.05);' : '')};
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.1);
@@ -27,11 +31,17 @@ const Item = styled.div`
 export const LayerPanel: React.FC = React.memo(() => {
   const { tiledMapManager } = useTiledManager();
   const [layers, setLayers] = useState<BaseLayer[]>([]);
+  const [currentLayerId, setCurrentLayerId] = useState<string>('');
 
   useEffect(() => {
     if (!tiledMapManager) {
       return;
     }
+
+    const _handleLayerSelected = () => {
+      const _currentLayerId = tiledMapManager.layerManager.currentLayer.layerId;
+      setCurrentLayerId(_currentLayerId);
+    };
 
     const _handleLayerChange = () => {
       const layers = tiledMapManager.layerManager.getLayers();
@@ -41,19 +51,46 @@ export const LayerPanel: React.FC = React.memo(() => {
     };
 
     _handleLayerChange();
+    _handleLayerSelected();
+
     tiledMapManager.on('layerChange', _handleLayerChange);
+    tiledMapManager.on('layerSelected', _handleLayerSelected);
 
     return () => {
       tiledMapManager.off('layerChange', _handleLayerChange);
+      tiledMapManager.off('layerSelected', _handleLayerSelected);
     };
   }, [tiledMapManager]);
+
+  const handleAddLayer = useCallback(() => {
+    if (!tiledMapManager) {
+      return;
+    }
+
+    tiledMapManager.addLayer(new BaseLayer(tiledMapManager.layerManager));
+  }, [tiledMapManager]);
+
+  const handleSelectLayer = useCallback(
+    (layerId: string) => {
+      tiledMapManager?.setCurrentLayerId(layerId);
+    },
+    [tiledMapManager],
+  );
 
   return (
     <Root>
       <Title>图层</Title>
       <div>
+        <button onClick={handleAddLayer}>新增</button>
+      </div>
+      <div>
         {layers.map((layer) => (
-          <Item key={layer.layerId} title={`${layer.layerId}`}>
+          <Item
+            key={layer.layerId}
+            title={`${layer.layerId}`}
+            active={currentLayerId === layer.layerId}
+            onClick={() => handleSelectLayer(layer.layerId)}
+          >
             {layer.layerName}
           </Item>
         ))}
