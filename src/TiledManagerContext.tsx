@@ -44,15 +44,3 @@ export function useTiledManager() {
 
   return { tiledMapManager, buildTiledMapManager };
 }
-
-export function useTiledMap() {
-  const { tiledMapManager } = useTiledManager();
-
-  const getLayerManager = useCallback(() => {
-    return tiledMapManager?.layerManager;
-  }, [tiledMapManager]);
-
-  return {
-    getLayerManager,
-  };
-}

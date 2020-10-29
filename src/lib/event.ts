@@ -2,7 +2,7 @@ interface EventPayload {
   [key: string]: any;
 }
 
-type EventCb = (payload?: EventPayload) => void;
+export type EventCb = (payload?: EventPayload) => void;
 
 interface EventListers {
   [event: string]: Set<EventCb>;

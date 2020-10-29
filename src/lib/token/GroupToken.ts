@@ -24,7 +24,7 @@ export class GroupToken extends BaseToken<Konva.Group> {
     }
     this.groupNode.draw();
 
-    this.manager.notify('update', this.getAttrs());
+    this.manager.tokenNotify('update', this.getAttrs());
   }
 
   getAttrs(): BaseNotifyAttrs {

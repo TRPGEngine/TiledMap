@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import type { BaseLayer } from './lib/layer/BaseLayer';
-import { useTiledMap } from './TiledManagerContext';
+import { useTiledManager, useTiledMap } from './TiledManagerContext';
 
 const Root = styled.div`
   width: 240px;
@@ -25,18 +25,28 @@ const Item = styled.div`
 `;
 
 export const LayerPanel: React.FC = React.memo(() => {
-  const { getLayerManager } = useTiledMap();
+  const { tiledMapManager } = useTiledManager();
   const [layers, setLayers] = useState<BaseLayer[]>([]);
 
   useEffect(() => {
-    // TODO: 改成监听模式
-    setTimeout(() => {
-      const layers = getLayerManager()?.getLayers();
+    if (!tiledMapManager) {
+      return;
+    }
+
+    const _handleLayerChange = () => {
+      const layers = tiledMapManager.layerManager.getLayers();
       if (Array.isArray(layers)) {
         setLayers(layers);
       }
-    }, 1000);
-  }, [getLayerManager]);
+    };
+
+    _handleLayerChange();
+    tiledMapManager.on('layerChange', _handleLayerChange);
+
+    return () => {
+      tiledMapManager.off('layerChange', _handleLayerChange);
+    };
+  }, [tiledMapManager]);
 
   return (
     <Root>

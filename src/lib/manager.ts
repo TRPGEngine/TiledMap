@@ -8,7 +8,7 @@ import _isNil from 'lodash/isNil';
 import { ToolManager } from './tools/manager';
 import { LayerManager } from './layer';
 import type { BaseLayer } from './layer/BaseLayer';
-import { EventBus } from './event';
+import { EventBus, EventCb } from './event';
 
 type NotifyType = 'add' | 'update' | 'remove';
 
@@ -192,8 +192,18 @@ export class TiledMapManager {
     return this.toolManager.currentToolName;
   }
 
-  notify(type: NotifyType, attrs: BaseNotifyAttrs) {
-    console.log(type, attrs);
+  /**
+   * token 变更
+   */
+  tokenNotify(type: NotifyType, attrs: BaseNotifyAttrs) {
+    this.eventBus.fire('tokenChange', { type, attrs });
+  }
+
+  /**
+   * 层变更
+   */
+  layerNotify(type: NotifyType, attrs: any) {
+    this.eventBus.fire('layerChange', { type, attrs });
   }
 
   draw() {
@@ -206,5 +216,39 @@ export class TiledMapManager {
    */
   setCursor(cursor: string) {
     this.stage.container().style.cursor = cursor;
+  }
+
+  /**
+   * 设置场景内容是否可拖动
+   * @param draggable 是否可拖动
+   */
+  setStageDraggable(shouldDraggable: boolean): void {
+    const stage = this.stage;
+
+    if (shouldDraggable === true) {
+      this.layerManager.defaultLayer.add(this.tr);
+    } else {
+      this.tr.remove();
+    }
+
+    stage.draggable(shouldDraggable);
+    stage.find(`.${DRAGGABLE}`).each((node) => {
+      node.draggable(shouldDraggable);
+    });
+  }
+
+  /**
+   * 监听事件
+   */
+  on(eventName: string, cb: EventCb): void {
+    eventName.split(' ').forEach((name) => {
+      this.eventBus.on(name, cb);
+    });
+  }
+
+  off(eventName: string, cb: EventCb): void {
+    eventName.split(' ').forEach((name) => {
+      this.eventBus.off(name, cb);
+    });
   }
 }

@@ -17,7 +17,18 @@ export class LayerManager {
    * @param layer 层
    */
   addLayer(layer: BaseLayer) {
-    this.tiledMapManager.stage.add(layer);
+    const tiledMapManager = this.tiledMapManager;
+
+    tiledMapManager.stage.add(layer);
+    tiledMapManager.layerNotify('add', layer.getAttrs());
+  }
+
+  removeLayer(layer: BaseLayer) {
+    const tiledMapManager = this.tiledMapManager;
+
+    const attrs = layer.getAttrs();
+    layer.remove();
+    tiledMapManager.layerNotify('remove', attrs);
   }
 
   /**

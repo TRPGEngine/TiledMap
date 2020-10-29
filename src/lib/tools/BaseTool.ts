@@ -48,11 +48,6 @@ export abstract class BaseTool {
    * @param draggable 是否可拖动
    */
   protected setStageDraggable(shouldDraggable: boolean) {
-    const stage = this.mapManager.stage;
-
-    stage.draggable(shouldDraggable);
-    stage.find(`.${DRAGGABLE}`).each((node) => {
-      node.draggable(shouldDraggable);
-    });
+    this.mapManager.setStageDraggable(shouldDraggable);
   }
 }

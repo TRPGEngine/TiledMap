@@ -68,7 +68,7 @@ export class BaseToken<T extends Konva.Node = Konva.Shape> {
 
   initEvent() {
     // 初始化事件时先通知服务器该Token被添加
-    this.manager.notify('add', this.getAttrs());
+    this.manager.tokenNotify('add', this.getAttrs());
 
     let startPos: Konva.Vector2d | null = null;
     this.node.on('dragstart', (e) => {
@@ -84,11 +84,11 @@ export class BaseToken<T extends Konva.Node = Konva.Shape> {
         // 如果没有变化则直接抛出
         return;
       }
-      this.manager.notify('update', this.getAttrs());
+      this.manager.tokenNotify('update', this.getAttrs());
     });
 
     this.node.on('transformend', (e) => {
-      this.manager.notify('update', this.getAttrs());
+      this.manager.tokenNotify('update', this.getAttrs());
     });
 
     this.node.on('mouseenter', (e) => {
@@ -108,7 +108,7 @@ export class BaseToken<T extends Konva.Node = Konva.Shape> {
    */
   remove() {
     this.node.remove();
-    this.manager.notify('remove', this.getAttrs());
+    this.manager.tokenNotify('remove', this.getAttrs());
   }
 
   /**
