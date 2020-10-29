@@ -43,7 +43,9 @@ export const LayerPanel: React.FC = React.memo(() => {
       <Title>图层</Title>
       <div>
         {layers.map((layer) => (
-          <Item title={`${layer.layerId}`}>{layer.layerName}</Item>
+          <Item key={layer.layerId} title={`${layer.layerId}`}>
+            {layer.layerName}
+          </Item>
         ))}
       </div>
     </Root>

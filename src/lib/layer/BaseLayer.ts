@@ -32,7 +32,7 @@ export class BaseLayer extends Konva.Layer {
   addToken(token: BaseToken) {
     this.add(token.node);
 
-    this.clear();
+    this.draw();
   }
 
   add(...children: LayerChildren[]): this {

@@ -1,9 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { initTiledMap } from './lib';
 import { Toolbox } from './Toolbox';
 import styled from 'styled-components';
 import { LayerPanel } from './LayerPanel';
-import { useTiledManagerRef } from './TiledManagerContext';
+import { useTiledManager } from './TiledManagerContext';
 
 const Container = styled.div`
   display: flex;
@@ -13,10 +12,10 @@ const Container = styled.div`
 
 export const App: React.FC = React.memo(() => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const tiledMapManagerRef = useTiledManagerRef();
+  const { buildTiledMapManager } = useTiledManager();
   useEffect(() => {
     if (containerRef.current) {
-      tiledMapManagerRef.current = initTiledMap(containerRef.current, {
+      buildTiledMapManager(containerRef.current, {
         width: 800,
         height: 600,
       });
@@ -29,7 +28,7 @@ export const App: React.FC = React.memo(() => {
         <LayerPanel />
 
         <div>
-          <Toolbox tiledMapManagerRef={tiledMapManagerRef} />
+          <Toolbox />
           <div ref={containerRef} style={{ backgroundColor: 'white' }}></div>
         </div>
       </Container>

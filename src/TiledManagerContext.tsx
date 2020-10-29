@@ -1,23 +1,33 @@
-import React, { useRef, useEffect, useCallback, useContext } from 'react';
-import type { TiledMapManager } from './lib/manager';
+import React, { useCallback, useContext, useState } from 'react';
 import { initTiledMap } from './lib';
+import type { TiledMapManager, TiledMapManagerOptions } from './lib/manager';
 
-type TiledMapManagerRef = React.MutableRefObject<TiledMapManager | undefined>;
-
-const TiledManagerContext = React.createContext<TiledMapManagerRef>({
-  current: undefined,
+const TiledManagerContext = React.createContext<{
+  tiledMapManager: TiledMapManager | null;
+  buildTiledMapManager: (el: any, options: any) => void;
+}>({
+  tiledMapManager: null,
+  buildTiledMapManager: () => {},
 });
+TiledManagerContext.displayName = 'TiledManagerContext';
 
 export const TiledManagerProvider: React.FC = (props) => {
-  const tiledMapManagerRef = useRef<TiledMapManager>();
+  const [
+    tiledMapManager,
+    setTiledMapManager,
+  ] = useState<TiledMapManager | null>(null);
 
-  useEffect(() => {
-    const el = document.createElement('div');
-    tiledMapManagerRef.current = initTiledMap(el);
-  }, []);
+  const buildTiledMapManager = useCallback(
+    (el: HTMLDivElement, options?: Partial<TiledMapManagerOptions>) => {
+      setTiledMapManager(initTiledMap(el, options));
+    },
+    [],
+  );
 
   return (
-    <TiledManagerContext.Provider value={tiledMapManagerRef}>
+    <TiledManagerContext.Provider
+      value={{ tiledMapManager, buildTiledMapManager }}
+    >
       {props.children}
     </TiledManagerContext.Provider>
   );
@@ -27,18 +37,20 @@ TiledManagerProvider.displayName = 'TiledManagerProvider';
 /**
  * 获取网格地图管理器
  */
-export function useTiledManagerRef(): TiledMapManagerRef {
-  const tiledMapManagerRef = useContext(TiledManagerContext);
+export function useTiledManager() {
+  const { tiledMapManager, buildTiledMapManager } = useContext(
+    TiledManagerContext,
+  );
 
-  return tiledMapManagerRef;
+  return { tiledMapManager, buildTiledMapManager };
 }
 
 export function useTiledMap() {
-  const tiledMapManagerRef = useTiledManagerRef();
+  const { tiledMapManager } = useTiledManager();
 
   const getLayerManager = useCallback(() => {
-    return tiledMapManagerRef.current?.layerManager;
-  }, []);
+    return tiledMapManager?.layerManager;
+  }, [tiledMapManager]);
 
   return {
     getLayerManager,

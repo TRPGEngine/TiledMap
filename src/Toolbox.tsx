@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import type { TiledMapManager } from './lib/manager';
 import type { ToolConfig } from './lib/tools/manager';
 import imageMap from './image-map.json';
+import { useTiledManager } from './TiledManagerContext';
 
 const Row = styled.div`
   padding: 4px;
@@ -19,13 +20,14 @@ const Item = styled.div.attrs({
   cursor: pointer;
 `;
 
-function useToolbox({ tiledMapManagerRef }: Props) {
+function useToolbox() {
+  const { tiledMapManager } = useTiledManager();
   const [currentTool, setCurrentTool] = useState('');
   const [currentToolConfig, setCurrentToolConfig] = useState<ToolConfig>({});
 
   const handleSwitchTool = useCallback(
     (toolName: string) => {
-      if (!tiledMapManagerRef.current) {
+      if (!tiledMapManager) {
         return;
       }
 
@@ -35,23 +37,23 @@ function useToolbox({ tiledMapManagerRef }: Props) {
         setCurrentTool(toolName);
       }
 
-      const success = tiledMapManagerRef.current.switchTool(toolName);
+      const success = tiledMapManager.switchTool(toolName);
       if (success) {
         setCurrentToolConfig({});
       } else {
         console.error('切换工具失败');
       }
     },
-    [currentTool],
+    [tiledMapManager, currentTool],
   );
 
   useEffect(() => {
-    if (!tiledMapManagerRef.current) {
+    if (!tiledMapManager) {
       return;
     }
 
-    setCurrentTool(tiledMapManagerRef.current.getCurrentToolName());
-  }, [tiledMapManagerRef.current]);
+    setCurrentTool(tiledMapManager.getCurrentToolName());
+  }, [tiledMapManager]);
 
   const handleSetToolConfig = useCallback(
     (key: string, value: string | number | undefined) => {
@@ -64,8 +66,8 @@ function useToolbox({ tiledMapManagerRef }: Props) {
   );
 
   useEffect(() => {
-    tiledMapManagerRef.current?.setToolConfig(currentToolConfig);
-  }, [currentToolConfig]);
+    tiledMapManager?.setToolConfig(currentToolConfig);
+  }, [tiledMapManager, currentToolConfig]);
 
   return {
     currentTool,
@@ -75,16 +77,14 @@ function useToolbox({ tiledMapManagerRef }: Props) {
   };
 }
 
-interface Props {
-  tiledMapManagerRef: React.MutableRefObject<TiledMapManager | undefined>;
-}
+interface Props {}
 export const Toolbox: React.FC<Props> = React.memo((props) => {
   const {
     currentTool,
     handleSwitchTool,
     currentToolConfig,
     handleSetToolConfig,
-  } = useToolbox(props);
+  } = useToolbox();
 
   const buildToolItem = useCallback(
     (toolName: string, icon: React.ReactElement) => {
