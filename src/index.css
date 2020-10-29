@@ -5,6 +5,10 @@ body {
   background-color: aliceblue;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 @font-face {
   font-family: 'iconfont'; /* project id 395009 */
   src: url('//at.alicdn.com/t/font_395009_9f3ws9c9udg.eot');

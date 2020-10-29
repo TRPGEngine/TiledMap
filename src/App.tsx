@@ -17,8 +17,8 @@ export const App: React.FC = React.memo(() => {
   useEffect(() => {
     if (containerRef.current) {
       tiledMapManagerRef.current = initTiledMap(containerRef.current, {
-        width: 1000,
-        height: 800,
+        width: 800,
+        height: 600,
       });
     }
   }, []);

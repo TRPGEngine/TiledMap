@@ -4,7 +4,7 @@ import { BaseLayer } from './BaseLayer';
 
 export class LayerManager {
   defaultLayer = new BaseLayer(this, {
-    name: 'defaultLayer',
+    layerName: 'defaultLayer',
   });
   currentLayer = this.defaultLayer;
 
