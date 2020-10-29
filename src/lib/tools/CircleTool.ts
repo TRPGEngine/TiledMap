@@ -45,7 +45,7 @@ export class CircleTool extends BaseTool {
       radius: 1,
     });
 
-    this.mapManager.getCurrentLayer().getRenderLayer().add(this.currentCircle);
+    this.mapManager.getCurrentLayer().add(this.currentCircle);
   };
 
   private _mouseup = () => {
@@ -77,6 +77,6 @@ export class CircleTool extends BaseTool {
     const radius = vector2dDistance(pos, currentCircle.position());
 
     currentCircle.radius(radius);
-    this.mapManager.getCurrentLayer().getRenderLayer().batchDraw();
+    this.mapManager.getCurrentLayer().batchDraw();
   }, 50);
 }

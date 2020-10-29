@@ -17,7 +17,7 @@ export class LayerManager {
    * @param layer 层
    */
   addLayer(layer: BaseLayer) {
-    this.tiledMapManager.stage.add(layer.getRenderLayer());
+    this.tiledMapManager.stage.add(layer);
   }
 
   /**
@@ -28,6 +28,8 @@ export class LayerManager {
       .getLayers()
       .toArray() as Konva.Layer[];
 
-    return renderLayers.map((l) => l.tiledLayer).filter(Boolean) as BaseLayer[];
+    return renderLayers.filter(
+      (layer) => layer instanceof BaseLayer,
+    ) as BaseLayer[];
   }
 }

@@ -42,7 +42,7 @@ export class LineTool extends BaseTool {
       points: [pos.x, pos.y],
     });
 
-    this.mapManager.getCurrentLayer().getRenderLayer().add(this.currentLine);
+    this.mapManager.getCurrentLayer().add(this.currentLine);
   };
 
   private _mouseup = () => {
@@ -75,6 +75,6 @@ export class LineTool extends BaseTool {
     newPoints[2] = pos.x;
     newPoints[3] = pos.y;
     currentLine.points(newPoints);
-    this.mapManager.getCurrentLayer().getRenderLayer().batchDraw();
+    this.mapManager.getCurrentLayer().batchDraw();
   }, 50);
 }

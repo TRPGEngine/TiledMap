@@ -1,38 +1,35 @@
 import Konva from 'konva';
-import type { LayerConfig } from 'konva/types/Layer';
+import type { Group } from 'konva/types/Group';
+import { Layer, LayerConfig } from 'konva/types/Layer';
+import type { Shape } from 'konva/types/Shape';
 import type { LayerManager } from '.';
 import type { BaseToken } from '../token/BaseToken';
 import { BrickLayerToken } from '../token/BrickLayerToken';
 
-declare module 'konva/types/Layer' {
-  interface Layer {
-    tiledLayer?: BaseLayer;
-  }
-}
-
 interface LayerOptions extends LayerConfig {}
 
-export class BaseLayer {
-  private render: Konva.Layer;
+type LayerChildren = Group | Shape;
+
+export class BaseLayer extends Layer {
   brickGroup: BrickLayerToken; // 每层都有一个底部砖块组 该组不能被移动 只能被砖块工具编辑
 
   constructor(manager: LayerManager, options?: LayerOptions) {
-    this.render = new Konva.Layer(options);
-    this.render.tiledLayer = this;
+    super();
     this.brickGroup = new BrickLayerToken(manager.tiledMapManager);
 
-    this.render.add(this.brickGroup.groupNode);
+    this.add(this.brickGroup.groupNode);
   }
 
   addToken(token: BaseToken) {
-    this.render.add(token.node);
+    this.add(token.node);
+
+    this.clear();
   }
 
-  draw() {
-    this.getRenderLayer().draw();
-  }
+  add(...children: LayerChildren[]): this {
+    console.log('add children');
+    super.add(...children);
 
-  getRenderLayer(): Konva.Layer {
-    return this.render;
+    return this;
   }
 }

@@ -68,9 +68,7 @@ export class TiledBrush extends BaseTool {
       return;
     }
 
-    const node = currentLayer
-      .getRenderLayer()
-      .getIntersection(pos, `.${BRICK}`);
+    const node = currentLayer.getIntersection(pos, `.${BRICK}`);
     if (!_isNil(node) && node instanceof Konva.Shape && node.hasName(BRICK)) {
       // 销毁之前的
       this.drawedNode.delete(node);
@@ -92,7 +90,7 @@ export class TiledBrush extends BaseTool {
       height: gridSize,
     });
     image.addName(BRICK);
-    this.mapManager.getCurrentLayer().getRenderLayer().add(image);
+    this.mapManager.getCurrentLayer().add(image);
     this.drawedNode.add(image);
     this.lastDrawPos = drawPos;
     image.draw();

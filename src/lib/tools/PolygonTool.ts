@@ -43,7 +43,7 @@ export class PolygonTool extends BaseTool {
         lineJoin: 'round',
       });
 
-      this.mapManager.getCurrentLayer().getRenderLayer().add(this.currentLine);
+      this.mapManager.getCurrentLayer().add(this.currentLine);
       this.currentLine.draw();
     } else {
       // 正在绘制
@@ -83,7 +83,7 @@ export class PolygonTool extends BaseTool {
     newPoints[length - 1] = pos.y;
 
     currentLine.points(newPoints);
-    this.mapManager.getCurrentLayer().getRenderLayer().batchDraw();
+    this.mapManager.getCurrentLayer().batchDraw();
   }, 50);
 
   private _contextmenu = (e: KonvaEventObject<MouseEvent>) => {

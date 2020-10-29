@@ -45,7 +45,7 @@ export class RectTool extends BaseTool {
       height: 0,
     });
 
-    this.mapManager.getCurrentLayer().getRenderLayer().add(this.currentRect);
+    this.mapManager.getCurrentLayer().add(this.currentRect);
   };
 
   private _mouseup = () => {
@@ -76,6 +76,6 @@ export class RectTool extends BaseTool {
 
     currentRect.width(pos.x - currentRect.x());
     currentRect.height(pos.y - currentRect.y());
-    this.mapManager.getCurrentLayer().getRenderLayer().batchDraw();
+    this.mapManager.getCurrentLayer().batchDraw();
   }, 50);
 }

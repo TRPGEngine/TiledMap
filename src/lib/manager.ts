@@ -41,7 +41,7 @@ export class TiledMapManager {
       rotationSnaps: [0, 45, 90, 135, 180, 225, 270, 315],
       boundBoxFunc: buildGridSnapBoundBox(gridSize),
     });
-    this.layerManager.defaultLayer.getRenderLayer().add(this.tr);
+    this.layerManager.defaultLayer.add(this.tr);
 
     this.initStageEvent();
   }
