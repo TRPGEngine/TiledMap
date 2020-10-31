@@ -23,7 +23,16 @@ export class LayerManager {
     tiledMapManager.layerNotify('add', layer.getAttrs());
   }
 
-  removeLayer(layer: BaseLayer) {
+  /**
+   * 移除层
+   * @param layerId 层ID
+   */
+  removeLayer(layerId: string) {
+    const layer = this.findLayerById(layerId);
+    if (!layer) {
+      return;
+    }
+
     const tiledMapManager = this.tiledMapManager;
 
     const attrs = layer.getAttrs();

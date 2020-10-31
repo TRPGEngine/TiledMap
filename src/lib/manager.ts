@@ -171,14 +171,6 @@ export class TiledMapManager {
   }
 
   /**
-   * 增加层
-   * @param layer 层
-   */
-  addLayer(layer: BaseLayer) {
-    this.layerManager.addLayer(layer);
-  }
-
-  /**
    * 获取当前激活的层
    */
   getCurrentLayer(): BaseLayer {

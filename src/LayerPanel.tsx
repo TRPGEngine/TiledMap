@@ -32,6 +32,7 @@ export const LayerPanel: React.FC = React.memo(() => {
   const { tiledMapManager } = useTiledManager();
   const [layers, setLayers] = useState<BaseLayer[]>([]);
   const [currentLayerId, setCurrentLayerId] = useState<string>('');
+  const layerManager = tiledMapManager?.layerManager;
 
   useEffect(() => {
     if (!tiledMapManager) {
@@ -63,12 +64,25 @@ export const LayerPanel: React.FC = React.memo(() => {
   }, [tiledMapManager]);
 
   const handleAddLayer = useCallback(() => {
-    if (!tiledMapManager) {
+    if (!layerManager) {
       return;
     }
 
-    tiledMapManager.addLayer(new BaseLayer(tiledMapManager.layerManager));
-  }, [tiledMapManager]);
+    layerManager.addLayer(new BaseLayer(layerManager));
+  }, [layerManager]);
+
+  const handleRemoveCurrentLayer = useCallback(() => {
+    if (!layerManager) {
+      return;
+    }
+
+    if (currentLayerId === '') {
+      return;
+    }
+
+    layerManager.removeLayer(currentLayerId);
+    setCurrentLayerId('');
+  }, [layerManager, currentLayerId]);
 
   const handleSelectLayer = useCallback(
     (layerId: string) => {
@@ -82,6 +96,7 @@ export const LayerPanel: React.FC = React.memo(() => {
       <Title>图层</Title>
       <div>
         <button onClick={handleAddLayer}>新增</button>
+        <button onClick={handleRemoveCurrentLayer}>删除当前层</button>
       </div>
       <div>
         {layers.map((layer) => (
