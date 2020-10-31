@@ -10,7 +10,7 @@ import { LayerManager } from './layer';
 import type { BaseLayer } from './layer/BaseLayer';
 import { EventBus, EventCb } from './event';
 
-type NotifyType = 'add' | 'update' | 'remove';
+type NotifyType = 'add' | 'update' | 'remove' | 'visible';
 
 export interface TiledMapManagerOptions {
   width: number;

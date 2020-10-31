@@ -60,4 +60,16 @@ export class LayerManager {
   findLayerById(layerId: string): BaseLayer | null {
     return this.getLayers().find((b) => b.layerId === layerId) ?? null;
   }
+
+  changeLayerVisible(layerId: string, visible: boolean): void {
+    const layer = this.findLayerById(layerId);
+
+    if (!layer) {
+      return;
+    }
+
+    layer.visible(visible);
+
+    this.tiledMapManager.layerNotify('visible', layer.getAttrs());
+  }
 }

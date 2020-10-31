@@ -20,13 +20,22 @@ const Item = styled.div<{
   line-height: 24px;
   border-top: 1px solid #ccc;
   padding: 4px 6px;
+  display: flex;
 
-  ${(props) => (props.active ? 'background-color: rgba(0, 0, 0, 0.05);' : '')};
+  ${(props) => (props.active ? 'background-color: rgba(0, 0, 0, 0.1);' : '')};
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  > .title {
+    flex: 1;
   }
 `;
+
+const ActionBtn = styled.button.attrs({
+  className: 'iconfont',
+})``;
 
 export const LayerPanel: React.FC = React.memo(() => {
   const { tiledMapManager } = useTiledManager();
@@ -71,18 +80,25 @@ export const LayerPanel: React.FC = React.memo(() => {
     layerManager.addLayer(new BaseLayer(layerManager));
   }, [layerManager]);
 
-  const handleRemoveCurrentLayer = useCallback(() => {
-    if (!layerManager) {
-      return;
-    }
+  const handleRemoveLayer = useCallback(
+    (layerId: string) => {
+      if (!layerManager) {
+        return;
+      }
 
+      layerManager.removeLayer(layerId);
+    },
+    [layerManager],
+  );
+
+  const handleRemoveCurrentLayer = useCallback(() => {
     if (currentLayerId === '') {
       return;
     }
 
-    layerManager.removeLayer(currentLayerId);
+    handleRemoveLayer(currentLayerId);
     setCurrentLayerId('');
-  }, [layerManager, currentLayerId]);
+  }, [handleRemoveLayer, currentLayerId]);
 
   const handleSelectLayer = useCallback(
     (layerId: string) => {
@@ -91,12 +107,25 @@ export const LayerPanel: React.FC = React.memo(() => {
     [tiledMapManager],
   );
 
+  const handleSwitchLayerVisible = useCallback(
+    (layerId: string, visible: boolean) => {
+      layerManager?.changeLayerVisible(layerId, visible);
+    },
+    [layerManager],
+  );
+
   return (
     <Root>
-      <Title>图层</Title>
+      <Title>
+        <i className="iconfont">&#xe768;</i>图层
+      </Title>
       <div>
-        <button onClick={handleAddLayer}>新增</button>
-        <button onClick={handleRemoveCurrentLayer}>删除当前层</button>
+        <ActionBtn title="新增" onClick={handleAddLayer}>
+          &#xe604;
+        </ActionBtn>
+        <ActionBtn title="删除当前层" onClick={handleRemoveCurrentLayer}>
+          &#xe76b;
+        </ActionBtn>
       </div>
       <div>
         {layers.map((layer) => (
@@ -106,7 +135,27 @@ export const LayerPanel: React.FC = React.memo(() => {
             active={currentLayerId === layer.layerId}
             onClick={() => handleSelectLayer(layer.layerId)}
           >
-            {layer.layerName}
+            <div className="title">{layer.layerName}</div>
+            <div>
+              <ActionBtn
+                title="切换显示"
+                onClick={() =>
+                  handleSwitchLayerVisible(layer.layerId, !layer.visible())
+                }
+              >
+                {layer.visible() ? (
+                  <span>&#xe760;</span>
+                ) : (
+                  <span>&#xe762;</span>
+                )}
+              </ActionBtn>
+              <ActionBtn
+                title="删除"
+                onClick={() => handleRemoveLayer(layer.layerId)}
+              >
+                &#xe76b;
+              </ActionBtn>
+            </div>
           </Item>
         ))}
       </div>
