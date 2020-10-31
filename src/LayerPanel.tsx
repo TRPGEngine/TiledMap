@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import type { LayerManager } from './lib/layer';
 import { BaseLayer } from './lib/layer/BaseLayer';
+import type { TiledMapManager } from './lib/manager';
 import { useTiledManager } from './TiledManagerContext';
 
 const Root = styled.div`
@@ -37,40 +39,9 @@ const ActionBtn = styled.button.attrs({
   className: 'iconfont',
 })``;
 
-export const LayerPanel: React.FC = React.memo(() => {
-  const { tiledMapManager } = useTiledManager();
-  const [layers, setLayers] = useState<BaseLayer[]>([]);
+function useLayerPanelAction(tiledMapManager: TiledMapManager | null) {
   const [currentLayerId, setCurrentLayerId] = useState<string>('');
   const layerManager = tiledMapManager?.layerManager;
-
-  useEffect(() => {
-    if (!tiledMapManager) {
-      return;
-    }
-
-    const _handleLayerSelected = () => {
-      const _currentLayerId = tiledMapManager.layerManager.currentLayer.layerId;
-      setCurrentLayerId(_currentLayerId);
-    };
-
-    const _handleLayerChange = () => {
-      const layers = tiledMapManager.layerManager.getLayers();
-      if (Array.isArray(layers)) {
-        setLayers(layers);
-      }
-    };
-
-    _handleLayerChange();
-    _handleLayerSelected();
-
-    tiledMapManager.on('layerChange', _handleLayerChange);
-    tiledMapManager.on('layerSelected', _handleLayerSelected);
-
-    return () => {
-      tiledMapManager.off('layerChange', _handleLayerChange);
-      tiledMapManager.off('layerSelected', _handleLayerSelected);
-    };
-  }, [tiledMapManager]);
 
   const handleAddLayer = useCallback(() => {
     if (!layerManager) {
@@ -127,6 +98,61 @@ export const LayerPanel: React.FC = React.memo(() => {
     },
     [layerManager],
   );
+
+  return {
+    currentLayerId,
+    setCurrentLayerId,
+    handleAddLayer,
+    handleRemoveLayer,
+    handleRemoveCurrentLayer,
+    handleSelectLayer,
+    handleSwitchLayerVisible,
+    handleChangeLayerName,
+  };
+}
+
+export const LayerPanel: React.FC = React.memo(() => {
+  const { tiledMapManager } = useTiledManager();
+  const [layers, setLayers] = useState<BaseLayer[]>([]);
+  const {
+    currentLayerId,
+    setCurrentLayerId,
+    handleAddLayer,
+    handleRemoveLayer,
+    handleRemoveCurrentLayer,
+    handleSelectLayer,
+    handleSwitchLayerVisible,
+    handleChangeLayerName,
+  } = useLayerPanelAction(tiledMapManager);
+
+  useEffect(() => {
+    if (!tiledMapManager) {
+      return;
+    }
+
+    const _handleLayerSelected = () => {
+      const _currentLayerId = tiledMapManager.layerManager.currentLayer.layerId;
+      setCurrentLayerId(_currentLayerId);
+    };
+
+    const _handleLayerChange = () => {
+      const layers = tiledMapManager.layerManager.getLayers();
+      if (Array.isArray(layers)) {
+        setLayers(layers);
+      }
+    };
+
+    _handleLayerChange();
+    _handleLayerSelected();
+
+    tiledMapManager.on('layerChange', _handleLayerChange);
+    tiledMapManager.on('layerSelected', _handleLayerSelected);
+
+    return () => {
+      tiledMapManager.off('layerChange', _handleLayerChange);
+      tiledMapManager.off('layerSelected', _handleLayerSelected);
+    };
+  }, [tiledMapManager]);
 
   return (
     <Root>
