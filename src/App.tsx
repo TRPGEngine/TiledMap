@@ -3,11 +3,18 @@ import { Toolbox } from './Toolbox';
 import styled from 'styled-components';
 import { LayerPanel } from './LayerPanel';
 import { useTiledManager } from './TiledManagerContext';
+import { Tokenbox } from './Tokenbox';
+import { ToolAttrs } from './ToolAttrs';
 
 const Container = styled.div`
   display: flex;
   height: 100vh;
   width: 100vw;
+`;
+
+const LeftPanel = styled.div`
+  width: 240px;
+  border-right: 1px solid #ccc;
 `;
 
 export const App: React.FC = React.memo(() => {
@@ -25,7 +32,13 @@ export const App: React.FC = React.memo(() => {
   return (
     <div className="App">
       <Container>
-        <LayerPanel />
+        <LeftPanel>
+          <ToolAttrs />
+
+          <Tokenbox />
+
+          <LayerPanel />
+        </LeftPanel>
 
         <div>
           <Toolbox />

@@ -6,8 +6,8 @@ import type { TiledMapManager } from './lib/manager';
 import { useTiledManager } from './TiledManagerContext';
 
 const Root = styled.div`
-  width: 240px;
-  border-right: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  padding: 10px 0;
 `;
 
 const Title = styled.div`
