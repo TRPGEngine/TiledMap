@@ -61,9 +61,11 @@ export class LayerManager {
     return this.getLayers().find((b) => b.layerId === layerId) ?? null;
   }
 
+  /**
+   * 修改图层可见性
+   */
   changeLayerVisible(layerId: string, visible: boolean): void {
     const layer = this.findLayerById(layerId);
-
     if (!layer) {
       return;
     }
@@ -71,5 +73,19 @@ export class LayerManager {
     layer.visible(visible);
 
     this.tiledMapManager.layerNotify('visible', layer.getAttrs());
+  }
+
+  /**
+   * 修改图层名
+   */
+  changeLayerName(layerId: string, layerName: string): void {
+    const layer = this.findLayerById(layerId);
+    if (!layer) {
+      return;
+    }
+
+    layer.layerName = layerName;
+
+    this.tiledMapManager.layerNotify('update', layer.getAttrs());
   }
 }

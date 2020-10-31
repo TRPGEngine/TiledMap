@@ -114,6 +114,20 @@ export const LayerPanel: React.FC = React.memo(() => {
     [layerManager],
   );
 
+  const handleChangeLayerName = useCallback(
+    (layerId: string) => {
+      let layerName = prompt(
+        '请输入图层名',
+        layerManager?.findLayerById(layerId)?.layerName ?? 'Layer',
+      );
+
+      if (layerName != null && layerName != '') {
+        layerManager?.changeLayerName(layerId, layerName);
+      }
+    },
+    [layerManager],
+  );
+
   return (
     <Root>
       <Title>
@@ -137,6 +151,12 @@ export const LayerPanel: React.FC = React.memo(() => {
           >
             <div className="title">{layer.layerName}</div>
             <div>
+              <ActionBtn
+                title="修改图层名"
+                onClick={() => handleChangeLayerName(layer.layerId)}
+              >
+                &#xe612;
+              </ActionBtn>
               <ActionBtn
                 title="切换显示"
                 onClick={() =>
