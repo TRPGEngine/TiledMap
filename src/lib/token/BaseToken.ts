@@ -4,8 +4,9 @@ import shortid from 'shortid';
 import { buildGridSnapBound } from '../utils/buildGridSnapBound';
 import { DRAGGABLE, SNAPGRIDTOKEN, TRANSFORMABLE } from './names';
 import { fixNumber } from '../utils/fixNumber';
-import type { BaseNotifyAttrs } from './types';
+import type { BaseNotifyAttrs, TokenConfig } from './types';
 import _isNil from 'lodash/isNil';
+import { snapGrid } from '../utils/snapGrid';
 
 export interface TokenOptions {
   id?: string;
@@ -17,6 +18,10 @@ export interface TokenOptions {
 
 export class BaseToken<T extends Konva.Node = Konva.Shape> {
   id: string;
+  name: string = 'Token'; // token名
+  config: TokenConfig = {
+    visible: 'all',
+  };
 
   constructor(
     public manager: TiledMapManager,
@@ -131,7 +136,21 @@ export class BaseToken<T extends Konva.Node = Konva.Shape> {
       scaleY: fixNumber(scale.y),
       rotation,
       node: this.node.getAttrs(),
+      config: this.config,
     };
+  }
+
+  /**
+   * 移动Token位置 使其贴合到网格
+   */
+  fitToGrid(): void {
+    const gridSize = this.manager.options.gridSize;
+
+    const { x, y } = this.node.getPosition();
+    this.node.setPosition({
+      x: snapGrid(x, gridSize),
+      y: snapGrid(y, gridSize),
+    });
   }
 
   /**

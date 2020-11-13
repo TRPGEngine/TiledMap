@@ -4,3 +4,10 @@ export interface BaseNotifyAttrs {
   y: number;
   [other: string]: any;
 }
+
+export type TokenVisible = 'all' | 'manager' | string[];
+
+export interface TokenConfig {
+  visible: TokenVisible;
+  [otherConfig: string]: any;
+}

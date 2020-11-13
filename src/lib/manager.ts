@@ -9,6 +9,8 @@ import { ToolManager } from './tools/manager';
 import { LayerManager } from './layer';
 import type { BaseLayer } from './layer/BaseLayer';
 import { EventBus, EventCb } from './event';
+import { DragDataType, getCurrentDragData } from './utils/drag-helper';
+import { ImageToken } from './token/ImageToken';
 
 type NotifyType = 'add' | 'update' | 'remove' | 'visible';
 
@@ -130,6 +132,21 @@ export class TiledMapManager {
         e.preventDefault();
         e.stopPropagation();
       }
+    });
+
+    // 拖入Token
+    container.addEventListener('dragover', (e) => {
+      e.preventDefault(); // !important
+    });
+    container.addEventListener('drop', (e) => {
+      e.preventDefault();
+      // now we need to find pointer position
+      // we can't use stage.getPointerPosition() here, because that event
+      // is not registered by Konva.Stage
+      // we can register it manually:
+      stage.setPointersPositions(e);
+
+      this.handleDrop(getCurrentDragData());
     });
 
     // // 场景缩放
@@ -256,5 +273,23 @@ export class TiledMapManager {
     eventName.split(' ').forEach((name) => {
       this.eventBus.off(name, cb);
     });
+  }
+
+  /**
+   * 处理drop数据
+   */
+  private handleDrop(dragData: DragDataType) {
+    if (dragData.type === 'imageToken') {
+      const { name, url } = dragData.data;
+      const pos = this.stage.getPointerPosition();
+      if (pos === null) {
+        return;
+      }
+
+      const token = ImageToken.createByUrl(this, url, pos.x, pos.y);
+      token.name = name;
+      token.fitToGrid();
+      this.getCurrentLayer().addToken(token);
+    }
   }
 }
