@@ -17,6 +17,16 @@ export interface TokenOptions {
   draggable?: boolean;
 }
 
+declare module 'konva/types/Shape' {
+  interface Shape {
+    token?: BaseToken<Konva.Shape>;
+  }
+}
+
+/**
+ * Token 是一个包装后用于网络传输数据的最小节点
+ */
+
 export class BaseToken<T extends Konva.Node = Konva.Shape> {
   id: string;
   config: TokenConfig = {
@@ -42,6 +52,10 @@ export class BaseToken<T extends Konva.Node = Konva.Shape> {
       this.id = shortid();
     } else {
       this.id = id;
+    }
+
+    if (this.node instanceof Konva.Shape) {
+      this.node.token = this as any;
     }
 
     if (_isNil(this.node.width())) {

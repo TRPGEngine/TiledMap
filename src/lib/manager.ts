@@ -55,7 +55,7 @@ export class TiledMapManager {
     const gridSize = this.options.gridSize;
 
     // clicks should select/deselect shapes
-    stage.on('click tap', function (e) {
+    stage.on('click tap', (e) => {
       // 处理旧节点
       const oldNodes = tr.nodes();
       oldNodes.forEach((node) => {
@@ -113,6 +113,23 @@ export class TiledMapManager {
         }
       });
       tr.getLayer()?.draw();
+    });
+
+    stage.on('contextmenu', (e) => {
+      // prevent default behavior
+      e.evt.preventDefault();
+      if (e.target === stage) {
+        // if we are on empty place of the stage we will do nothing
+        return;
+      }
+
+      const target = e.target;
+
+      if (target instanceof Konva.Shape && target.token) {
+        this.eventBus.fire('tokenContextMenu', {
+          token: target.token,
+        });
+      }
     });
 
     container.focus();
