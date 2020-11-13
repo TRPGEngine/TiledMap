@@ -1,10 +1,19 @@
-export type DragDataType = {
-  type: 'imageToken';
-  data: {
-    name: string;
-    url: string;
-  };
-};
+export type DragDataType =
+  | {
+      type: 'imageToken';
+      data: {
+        name: string;
+        url: string;
+      };
+    }
+  | {
+      type: 'actorToken';
+      data: {
+        uuid: string;
+        name: string;
+        url: string;
+      };
+    };
 
 let _currentDragData: DragDataType;
 /**

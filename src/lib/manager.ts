@@ -10,7 +10,7 @@ import { LayerManager } from './layer';
 import type { BaseLayer } from './layer/BaseLayer';
 import { EventBus, EventCb } from './event';
 import { DragDataType, getCurrentDragData } from './utils/drag-helper';
-import { ImageToken } from './token/ImageToken';
+import { ActorToken } from './token/ActorToken';
 
 type NotifyType = 'add' | 'update' | 'remove' | 'visible';
 
@@ -279,14 +279,15 @@ export class TiledMapManager {
    * 处理drop数据
    */
   private handleDrop(dragData: DragDataType) {
-    if (dragData.type === 'imageToken') {
-      const { name, url } = dragData.data;
+    if (dragData.type === 'actorToken') {
+      const { uuid, name, url } = dragData.data;
       const pos = this.stage.getPointerPosition();
       if (pos === null) {
         return;
       }
 
-      const token = ImageToken.createByUrl(this, url, pos.x, pos.y);
+      const token = ActorToken.createActor(this, url, pos);
+      token.uuid = uuid;
       token.name = name;
       token.fitToGrid();
       this.getCurrentLayer().addToken(token);

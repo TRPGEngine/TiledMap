@@ -1,4 +1,4 @@
-import type Konva from 'konva';
+import Konva from 'konva';
 import type { TiledMapManager } from '../manager';
 import shortid from 'shortid';
 import { buildGridSnapBound } from '../utils/buildGridSnapBound';
@@ -7,6 +7,7 @@ import { fixNumber } from '../utils/fixNumber';
 import type { BaseNotifyAttrs, TokenConfig } from './types';
 import _isNil from 'lodash/isNil';
 import { snapGrid } from '../utils/snapGrid';
+import type { IRect } from 'konva/types/types';
 
 export interface TokenOptions {
   id?: string;
@@ -18,14 +19,14 @@ export interface TokenOptions {
 
 export class BaseToken<T extends Konva.Node = Konva.Shape> {
   id: string;
-  name: string = 'Token'; // token名
   config: TokenConfig = {
     visible: 'all',
   };
+  renderNodeGroup = new Konva.Group();
 
   constructor(
     public manager: TiledMapManager,
-    public node: T,
+    protected node: T,
     options?: TokenOptions,
   ) {
     const gridSize = manager.options.gridSize;
@@ -63,6 +64,8 @@ export class BaseToken<T extends Konva.Node = Konva.Shape> {
       // 可变换
       this.node.addName(TRANSFORMABLE);
     }
+
+    this.renderNodeGroup.add(this.node as any);
 
     this.initEvent();
   }
@@ -112,7 +115,7 @@ export class BaseToken<T extends Konva.Node = Konva.Shape> {
    * 移除节点
    */
   remove() {
-    this.node.remove();
+    this.renderNodeGroup.remove();
     this.manager.tokenNotify('remove', this.getAttrs());
   }
 
@@ -151,6 +154,24 @@ export class BaseToken<T extends Konva.Node = Konva.Shape> {
       x: snapGrid(x, gridSize),
       y: snapGrid(y, gridSize),
     });
+  }
+
+  /**
+   * 获取节点实际渲染的矩形
+   */
+  getNodeDisplayRect(): IRect {
+    const { x, y } = this.node.getPosition();
+    const { width, height } = this.node.getSize();
+    const { x: scaleX, y: scaleY } = this.node.getAbsoluteScale();
+
+    return { x, y, width: width * scaleX, height: height * scaleY };
+  }
+
+  /**
+   * 绘制函数
+   */
+  draw() {
+    this.node.draw();
   }
 
   /**

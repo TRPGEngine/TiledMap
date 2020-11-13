@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import shortid from 'shortid';
 import styled from 'styled-components';
 import imageMap from './image-map.json';
 import { setCurrentDragData } from './lib/utils/drag-helper';
@@ -37,8 +38,9 @@ const TokenListItem = styled.div`
 export const Tokenbox: React.FC = React.memo(() => {
   const handleDrag = useCallback((name: string, url: string) => {
     setCurrentDragData({
-      type: 'imageToken',
+      type: 'actorToken',
       data: {
+        uuid: shortid(),
         name,
         url,
       },
@@ -50,7 +52,7 @@ export const Tokenbox: React.FC = React.memo(() => {
       <div>Token 列表: </div>
       <TokenList>
         {Object.entries(imageMap.token).map(([name, url]) => (
-          <TokenListItem onDrag={() => handleDrag(name, url)}>
+          <TokenListItem key={name} onDrag={() => handleDrag(name, url)}>
             <img src={url} />
             <span>{name}</span>
           </TokenListItem>
