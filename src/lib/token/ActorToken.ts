@@ -49,15 +49,17 @@ export class ActorToken extends ImageToken {
   ) {
     super(manager, imageNode, options);
 
-    this.initLabel();
+    this.initLabelNode();
+    this.initLabelEvent();
   }
 
-  private initLabel() {
+  private initLabelNode() {
     this._labelNode = new Konva.Text({
       align: 'center',
       text: name,
       fontFamily: 'Calibri',
       fill: 'grey',
+      visible: false,
     });
 
     this.node.on('transform dragmove', () => {
@@ -69,16 +71,39 @@ export class ActorToken extends ImageToken {
     this.renderNodeGroup.add(this._labelNode);
   }
 
+  /**
+   * 移动到节点上时显示标签
+   */
+  private initLabelEvent() {
+    this.node.on('mouseenter', (e) => {
+      if (!this._labelNode) {
+        return;
+      }
+
+      this._labelNode.show();
+      this._labelNode.draw();
+    });
+    this.node.on('mouseleave', (e) => {
+      if (!this._labelNode) {
+        return;
+      }
+
+      this._labelNode.hide();
+      this._labelNode.getLayer()?.draw();
+    });
+  }
+
   updateLabelPos() {
-    if (!this._labelNode) {
+    const labelNode = this._labelNode;
+    if (!labelNode) {
       return;
     }
 
     const { x, y, width, height } = this.getNodeDisplayRect();
 
-    this._labelNode.setAttrs({
+    labelNode.setAttrs({
       x: x,
-      y: y + height,
+      y: y + height + 10,
       width: width,
       fontSize: width >= 80 ? 20 : 10,
     });

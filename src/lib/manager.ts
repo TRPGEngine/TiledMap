@@ -41,7 +41,6 @@ export class TiledMapManager {
       enabledAnchors: ['middle-right', 'bottom-center', 'bottom-right'],
       rotationSnapTolerance: 5,
       rotationSnaps: [0, 45, 90, 135, 180, 225, 270, 315],
-      boundBoxFunc: buildGridSnapBoundBox(gridSize),
     });
     this.layerManager.defaultLayer.add(this.tr);
 
@@ -73,6 +72,7 @@ export class TiledMapManager {
       }
 
       if (!e.target.hasName(TRANSFORMABLE)) {
+        // 该目标不允许被编辑
         return;
       }
 
