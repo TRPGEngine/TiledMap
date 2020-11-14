@@ -37,6 +37,13 @@ export function buildGridSnapBoundBox(gridSize: number) {
     targetBox.width = snapGrid(newBox.width, gridSize);
     targetBox.height = snapGrid(newBox.height, gridSize);
 
+    if (targetBox.width === 0) {
+      targetBox.width = gridSize;
+    }
+    if (targetBox.height === 0) {
+      targetBox.height = gridSize;
+    }
+
     return targetBox;
   }
 
