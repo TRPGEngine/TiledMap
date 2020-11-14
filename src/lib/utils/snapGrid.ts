@@ -3,6 +3,10 @@
  * 返回这个数靠近网格单位大小的值
  */
 export function snapGrid(num: number, gridSize: number): number {
+  if (isNaN(num)) {
+    num = 0;
+  }
+
   return Math.round(num / gridSize) * gridSize;
 }
 
