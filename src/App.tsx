@@ -5,6 +5,7 @@ import { LayerPanel } from './LayerPanel';
 import { useTiledManager } from './TiledManagerContext';
 import { Tokenbox } from './Tokenbox';
 import { ToolAttrs } from './ToolAttrs';
+import { TokenContextMenu } from './TokenContextMenu';
 
 const Container = styled.div`
   display: flex;
@@ -43,6 +44,7 @@ export const App: React.FC = React.memo(() => {
         <div>
           <Toolbox />
           <div ref={containerRef} style={{ backgroundColor: 'white' }}></div>
+          <TokenContextMenu />
         </div>
       </Container>
     </div>
